@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="WpfAdminClient.View.AddProductControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="10">
+        <TabControl>
+            <TabItem Header="Добавить товар">
+                <StackPanel>
+                    <Label Content="Брэнд: "/>
+                    <ComboBox Width="120" 
+        SelectedItem="{Binding SelectedBrand}" 
+        ItemsSource="{Binding Brands}" 
+        DisplayMemberPath="Title" />
+
+                    <Label Content="Категория: "/>
+                    <ComboBox Width="120" 
+        SelectedItem="{Binding SelectedType}" 
+        ItemsSource="{Binding TypesList}" 
+        DisplayMemberPath="Title" />
+
+                    <TextBlock Text="Название:" />
+                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock Text="Описание:" />
+                    <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Height="100" />
+
+                    <TextBlock Text="Цена:" />
+                    <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Button Content="Добавить изображение" Command="{Binding AddImageCommand}" />
+                    <ListBox ItemsSource="{Binding Images}" Height="100" />
+
+                    <Button Content="Сохранить продукт" Command="{Binding SaveCommand}" />
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Добавить брэнд">
+                <StackPanel>
+                    <Label Content="Название"/>
+                    <TextBox/>
+                    <Button Content="Сохранить"/>
+                </StackPanel>
+                
+            </TabItem>
+
+            <TabItem Header="Добавить категорию">
+                <StackPanel>
+                    <Label Content="Название"/>
+                    <TextBox/>
+                    <Button Content="Сохранить"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

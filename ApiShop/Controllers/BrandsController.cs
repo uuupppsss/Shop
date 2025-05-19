@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiShop.Model;
 using ShopLib;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiShop.Controllers
 {
@@ -84,6 +85,7 @@ namespace ApiShop.Controllers
 
         // POST: api/Brands
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<ActionResult<Brand>> PostBrand(Brand brand)
         {

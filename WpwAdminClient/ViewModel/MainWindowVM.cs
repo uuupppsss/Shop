@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfClientShop.Services
+namespace WpfAdminClient.ViewModel
 {
-    public class AdminService
+    public class MainWindowVM:BaseVM
     {
     }
 }

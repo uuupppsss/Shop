@@ -6,7 +6,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using WpfClientShop.ViewModel;
 
-namespace WpfClientShop
+namespace WpfClientShop.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -17,6 +17,9 @@ namespace WpfClientShop
         {
             InitializeComponent();
             DataContext = new MainWindowVM();
+
+            MainContentControl.Content = new MainControl();
         }
+  
     }
 }

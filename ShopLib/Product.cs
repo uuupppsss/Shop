@@ -19,13 +19,13 @@ public partial class Product
 
     public int TimeBought { get; set; }
 
-    public int Count { get; set; } 
-
     public virtual ICollection<Basketitem> Basketitems { get; set; } = new List<Basketitem>();
 
     public virtual Brand Brand { get; set; } = null!;
 
     public virtual ICollection<Orderitem> Orderitems { get; set; } = new List<Orderitem>();
+
+    public virtual ICollection<Productimage> Productimages { get; set; } = new List<Productimage>();
 
     public virtual ICollection<Productsize> Productsizes { get; set; } = new List<Productsize>();
 

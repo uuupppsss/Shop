@@ -62,5 +62,45 @@ namespace WpfClientShop.Services
                 return null;
             }
         }
+
+        public async Task<List<ProductImageDTO>> GetProductImages(int product_id)
+        {
+            try
+            {
+                return await Client.HttpClient.GetFromJsonAsync<List<ProductImageDTO>>($"Productimages/{product_id}");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<ProductDTO> GetProductDetails(int product_id)
+        {
+            try
+            {
+                return await Client.HttpClient.GetFromJsonAsync<ProductDTO>($"Products/{product_id}");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+
+        }
+
+        public async Task<List<ProductSizeDTO>> GetProductSizes(int product_id)
+        {
+            try
+            {
+                return await Client.HttpClient.GetFromJsonAsync<List<ProductSizeDTO>>($"Productsizes/{product_id}");
+            }
+            catch(Exception ex)
+            { 
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace ShopLib
 
         public int TimeBought { get; set; }
 
-        public int Count { get; set; } 
+        public byte[]? HeaderImage { get; set; }
+
     }
 }

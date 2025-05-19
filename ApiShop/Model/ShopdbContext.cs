@@ -29,6 +29,8 @@ public partial class ShopdbContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
+    public virtual DbSet<Productimage> Productimages { get; set; }
+
     public virtual DbSet<Productsize> Productsizes { get; set; }
 
     public virtual DbSet<Producttype> Producttypes { get; set; }
@@ -155,6 +157,23 @@ public partial class ShopdbContext : DbContext
             entity.HasOne(d => d.Type).WithMany(p => p.Products)
                 .HasForeignKey(d => d.TypeId)
                 .HasConstraintName("fk_product_type");
+        });
+
+        modelBuilder.Entity<Productimage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("productimages");
+
+            entity.HasIndex(e => e.ProductId, "fk_productimages_product");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Image).HasColumnType("blob");
+            entity.Property(e => e.ProductId).HasColumnName("Product_id");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Productimages)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("fk_productimages_product");
         });
 
         modelBuilder.Entity<Productsize>(entity =>

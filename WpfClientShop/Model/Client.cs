@@ -1,5 +1,6 @@
 ﻿
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace WpfClientShop.Model
 {
@@ -19,32 +20,9 @@ namespace WpfClientShop.Model
             }
         }
 
-        //private static HubConnection _userHubConnection;
-        //public static HubConnection UserHubConnection
-        //{
-        //    get
-        //    {
-        //        if (_userHubConnection == null)
-        //        {
-        //            return _userHubConnection= new HubConnectionBuilder()
-        //        .WithUrl("http://localhost:5175/gamehub")
-        //        .Build();
-        //        }
-        //        return _userHubConnection;
-        //    }
-        //}
-
-        //private static HubConnection _adminHubConnection;
-        //public static HubConnection AdminHubConnection
-        //{
-        //    get
-        //    {
-        //        if (_adminHubConnection == null)
-        //            _adminHubConnection = new HubConnectionBuilder()
-        //        .WithUrl("http://localhost:5216/")
-        //        .Build();
-        //        return _adminHubConnection;
-        //    }
-        //}
+        public static void SetToken(string token)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
     }
 }

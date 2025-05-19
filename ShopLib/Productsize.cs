@@ -11,7 +11,7 @@ public partial class Productsize
 
     public string Size { get; set; } = null!;
 
-    public string Count { get; set; } = null!;
+    public int Count { get; set; } 
 
     public virtual Product Product { get; set; } = null!;
 }

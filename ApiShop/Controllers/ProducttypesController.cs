@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiShop.Model;
 using ShopLib;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiShop.Controllers
 {
@@ -38,52 +39,55 @@ namespace ApiShop.Controllers
         }
 
         // GET: api/Producttypes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Producttype>> GetProducttype(int id)
-        {
-            var producttype = await _context.Producttypes.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Producttype>> GetProducttype(int id)
+        //{
+        //    var producttype = await _context.Producttypes.FindAsync(id);
 
-            if (producttype == null)
-            {
-                return NotFound();
-            }
+        //    if (producttype == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return producttype;
-        }
+        //    return producttype;
+        //}
 
         // PUT: api/Producttypes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProducttype(int id, Producttype producttype)
-        {
-            if (id != producttype.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(producttype).State = EntityState.Modified;
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutProducttype(int id, Producttype producttype)
+        //{
+        //    if (id != producttype.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProducttypeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    _context.Entry(producttype).State = EntityState.Modified;
 
-            return NoContent();
-        }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!ProducttypeExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return NoContent();
+        //}
 
         // POST: api/Producttypes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<ActionResult<Producttype>> PostProducttype(Producttype producttype)
         {
@@ -94,6 +98,7 @@ namespace ApiShop.Controllers
         }
 
         // DELETE: api/Producttypes/5
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProducttype(int id)
         {
@@ -109,9 +114,6 @@ namespace ApiShop.Controllers
             return NoContent();
         }
 
-        private bool ProducttypeExists(int id)
-        {
-            return _context.Producttypes.Any(e => e.Id == id);
-        }
+       
     }
 }

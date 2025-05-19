@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="WpfAdminClient.View.MainControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10" Grid.Row="0">
+                <TextBox Width="200" Margin="10" 
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Width="120" 
+                      SelectedItem="{Binding SelectedBrand}" 
+                      ItemsSource="{Binding Brands}" 
+                      DisplayMemberPath="Title" Margin="10"/>
+                <ComboBox Width="120" 
+                      SelectedItem="{Binding SelectedType}" 
+                      ItemsSource="{Binding TypesList}" 
+                      DisplayMemberPath="Title" Margin="10"/>
+            </StackPanel>
+
+        <ListBox ItemsSource="{Binding ProductsView}" VerticalAlignment="Stretch" Background="#f9f9f9" BorderThickness="0" Grid.Row="1">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="3" />
+                    <!-- Устанавливаем количество колонок -->
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="400" Height="350" BorderBrush="#ddd" BorderThickness="1" Margin="10" Padding="10" CornerRadius="5" Background="White">
+                        <StackPanel>
+                            <Image Height="200" Source="{Binding ImageSource}"  Width="400" Stretch="Uniform" />
+                            <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="Bold" Margin="0,5,0,0"/>
+                            <TextBlock Text="{Binding Price, StringFormat='Цена: {0} руб.'}" Foreground="#888"/>
+
+                            <Button  Content="Подробнее" Margin="0,10,0,0" Background="#4CAF50" Foreground="White" BorderBrush="#4CAF50"
+                                     Command="{Binding DataContext.ShowProductDetailsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                    CommandParameter="{Binding}"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+    </Grid>
+</UserControl>

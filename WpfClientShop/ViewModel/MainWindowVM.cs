@@ -4,87 +4,121 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using WpfClientShop.Model;
 using WpfClientShop.Services;
+using WpfClientShop.View;
 
 namespace WpfClientShop.ViewModel
 {
     public class MainWindowVM:BaseVM
     {
-		private UsingService _usingService;
-
-		private List<ProductDTO> _products;
-
-		public List<ProductDTO> Products
-		{
-			get { return _products; }
-			set 
-			{
-				_products = value;
-				Signal();
-			}
-		}
-
-		private List<BrandDTO> _brands;
-
-		public List<BrandDTO> Brands
-		{
-			get { return _brands; }
-			set 
-			{
-				_brands = value; 
-				Signal();
-			}
-		}
-
-		private List<ProductTypeDTO> _typesList;
-
-		public List<ProductTypeDTO> TypesList
-		{
-			get { return _typesList; }
-			set 
-			{
-				_typesList = value; 
-				Signal();
-			}
-		}
-
-		private int _selectedTypeId;
-
-		public int SelectedTypeId
-		{
-			get { return _selectedTypeId; }
-			set 
-			{
-				_selectedTypeId = value;
-				Signal();
-			}
-		}
-
-		private int _selectedBrandId;
-
-		public int SelectedBrandId
-		{
-			get { return _selectedBrandId; }
-			set 
-			{
-				_selectedBrandId = value; 
-				Signal() ;
-			}
-		}
-
-
-		public MainWindowVM()
+        private bool _isAdmin;
+        public bool IsAdmin
         {
-			LoadData();
-		}
+            get { return _isAdmin; }
+            set
+            {
+                _isAdmin = value;
+                Signal();
+            }
+        }
 
-		private async void LoadData()
-		{
-			_usingService=UsingService.Instance;
+        private bool _isAuthorized;
+        public bool IsAuthorized
+        {
+            get { return _isAuthorized; }
+            set
+            {
+                _isAuthorized = value;
+                Signal();
+            }
+        }
 
-			Products = await _usingService.GetProductsList();
-			Brands = await _usingService.GetBrandsList();
-			TypesList= await _usingService.GetTypesList();
-		}
+        //private bool _isGuest;
+        //public bool IsGuest
+        //{
+        //    get => _isGuest;
+        //    private set
+        //    {
+        //        _isGuest = value;
+        //        Signal();
+        //    }
+        //}
+
+        public CustomCommand HomeCommand { get; }
+
+        public CustomCommand CartCommand { get; }
+
+        public CustomCommand AccountCommand { get; }
+
+        public MainWindowVM()
+        {
+            AuthService.Instance.CurrentUserChanged += OnCurrentUserChanged;
+            UpdateUserPolicy();
+            HomeCommand = new CustomCommand(NavHome);
+            CartCommand = new CustomCommand(NavCart);
+            AccountCommand=new CustomCommand(NavAccount);
+        }
+
+        
+
+        private void OnCurrentUserChanged()
+        {
+            UpdateUserPolicy();
+        }
+
+        private void UpdateUserPolicy()
+        {
+            IsAdmin = AuthService.Instance.IsAdmin();
+            Signal(nameof(IsAdmin));
+
+            IsAuthorized=AuthService.Instance.IsAuthorized();
+            Signal(nameof(IsAuthorized));
+
+            //IsGuest=!IsAuthorized;
+            //Signal(nameof(IsGuest));
+        }
+
+
+
+        private void NavHome()
+        {
+            var mainControl = new MainControl();
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            mainWindow.MainContentControl.Content = mainControl;
+        }
+
+        private void NavCart()
+        {
+            if(IsAuthorized)
+            {
+                var cartControl = new CartControl();
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                mainWindow.MainContentControl.Content = cartControl;
+            }
+            else
+            {
+                var authControl = new AuthControl();
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                mainWindow.MainContentControl.Content = authControl;
+            }
+        }
+
+        private void NavAccount()
+        {
+            if(IsAuthorized)
+            {
+                var accountControl = new AccountControl();
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                mainWindow.MainContentControl.Content = accountControl;
+            }
+            else
+            {
+                var authControl = new AuthControl();
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                mainWindow.MainContentControl.Content = authControl;
+            }
+        }
     }
 }

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiShop.Model;
 using ShopLib;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiShop.Controllers
 {
@@ -26,18 +22,18 @@ namespace ApiShop.Controllers
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
             List<ProductDTO> result = new();
-            foreach(var item in _context.Products)
+            foreach(var item in _context.Products.Include(p=>p.Productimages))
             {
                 result.Add(new ProductDTO
                 {
-                    Id= item.Id,
-                    Title= item.Title,
-                    Description= item.Description,
-                    Price= item.Price,
-                    TimeBought= item.TimeBought,
-                    TypeId= item.TypeId,
-                    BrandId= item.BrandId,
-                    Count= item.Count,
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    Price = item.Price,
+                    TimeBought = item.TimeBought,
+                    TypeId = item.TypeId,
+                    BrandId = item.BrandId,
+                    HeaderImage = item.Productimages.Count==0? null: item.Productimages.First().Image,
                 });
             }
             return Ok(result);
@@ -45,20 +41,30 @@ namespace ApiShop.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductDTO>> GetProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
 
-            if (product == null)
-            {
-                return NotFound();
-            }
+            if (product == null) return NotFound();
 
-            return product;
+            ProductDTO result = new ProductDTO
+            {
+                Id=product.Id,
+                Title = product.Title,
+                Description = product.Description,
+                Price = product.Price,
+                TimeBought = product.TimeBought,
+                TypeId = product.TypeId,
+                BrandId = product.BrandId,
+
+            };
+
+            return Ok(result);
         }
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
@@ -90,16 +96,28 @@ namespace ApiShop.Controllers
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "admin")]
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<int>> PostProduct(ProductDTO sent_product)
         {
+            Product product = new Product()
+            {
+                Title = sent_product.Title,
+                Description = sent_product.Description,
+                Price = sent_product.Price,
+                BrandId = sent_product.BrandId,
+                TypeId = sent_product.TypeId,
+                TimeBought = 0,
+            };
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            if (_context.Products.Contains(product)) return Ok(product.Id);
+            else return BadRequest();
         }
 
         // DELETE: api/Products/5
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

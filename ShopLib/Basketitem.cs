@@ -11,7 +11,7 @@ public partial class Basketitem
 
     public int UserId { get; set; }
 
-    public string Count { get; set; } = null!;
+    public int Count { get; set; } 
 
     public string Size { get; set; } = null!;
 

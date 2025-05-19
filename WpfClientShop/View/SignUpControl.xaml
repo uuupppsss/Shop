@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="WpfClientShop.View.SignUpControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfClientShop.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <StackPanel>
+            <Label Content="Логин"/>
+            <TextBox Text="{Binding User.Username}"/>
+            <Label Content="Email"/>
+            <TextBox Text="{Binding User.Email}"/>
+            <Label Content="Номер телефона"/>
+            <TextBox Text="{Binding User.Phone}"/>
+            <Label Content="Пароль"/>
+            <PasswordBox x:Name="pwd_box"/>
+            
+            <Label Content="Повторите пароль"/>
+            <PasswordBox x:Name="repeat_pwd_box"/>
+            
+            <Button Content="Зарегистрироваться" Command="{Binding SignUpCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

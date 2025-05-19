@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="WpfClientShop.View.ProductDetailsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfClientShop.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Image Source="{Binding CurrentImage}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <Button Content="◀️" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Center"
+                Command="{Binding PreviousCommand}"/>
+        <Button Content="▶️" Width="50" Height="50" HorizontalAlignment="Right" VerticalAlignment="Center"
+                Command="{Binding NextCommand}"/>
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="{Binding Product.Title}" FontSize="16" FontWeight="Bold" Margin="5"/>
+            <TextBlock Text="{Binding Product.Description}" FontSize="16" Margin="5"/>
+            <TextBlock Text="{Binding Product.Price, StringFormat='Цена: {0} руб.'}" Foreground="#888"/>
+            <TextBlock FontSize="20" FontWeight="Bold" Margin="10">Доступные размеры</TextBlock>
+            <ListBox ItemsSource="{Binding ProductSizes}" 
+                     SelectedItem="{Binding SelectedSize}" 
+                     Margin="10">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Size,StringFormat='Размер {0} '}"/>
+                            <TextBlock Text="{Binding Count,StringFormat='Осталось {0} шт.'}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button  Content="Добавить в корзину" Margin="0,10,0,0" Background="#4CAF50" Foreground="White" BorderBrush="#4CAF50" Command="{Binding AddToBasketCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
