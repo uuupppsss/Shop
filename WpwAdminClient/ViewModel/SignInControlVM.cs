@@ -1,6 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using WpfAdminClient.Model;
 using WpfAdminClient.Services;
+using WpfAdminClient.View;
 
 namespace WpfAdminClient.ViewModel
 {
@@ -33,6 +35,12 @@ namespace WpfAdminClient.ViewModel
 		private async void SignIn()
 		{
 			await AuthService.Instance.SignIn(Username, _pwdBox.Password);
+			if(AuthService.Instance.CurrentUser!=null)
+			{
+                var mainControl = new MainControl();
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                mainWindow.MainContentControl.Content = mainControl;
+            }
 		}
     }
 }

@@ -7,7 +7,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="10">
         <TabControl>
-            <TabItem Header="Добавить товар">
+            <TabItem Header="Товары">
                 <StackPanel>
                     <Label Content="Брэнд: "/>
                     <ComboBox Width="120" 
@@ -37,20 +37,44 @@
                 </StackPanel>
             </TabItem>
 
-            <TabItem Header="Добавить брэнд">
+            <TabItem Header="Бренды">
                 <StackPanel>
-                    <Label Content="Название"/>
-                    <TextBox/>
-                    <Button Content="Сохранить"/>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Добавить Бренд"/>
+                        <Label Content="Название"/>
+                        <TextBox Text="{Binding BrandTitle, Mode=TwoWay}"/>
+                        <Button Content="Сохранить" Command="{Binding AddBrandCommand}"/>
+                    </StackPanel>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Удалить Бренд"/>
+                        <ComboBox Width="120" 
+                        SelectedItem="{Binding BrandToDrop}" 
+                        ItemsSource="{Binding Brands}" 
+                        DisplayMemberPath="Title" />
+
+                        
+                        <Button Content="Удалить" Command="{Binding RemoveBrandCommand}"/>
+                    </StackPanel>
                 </StackPanel>
                 
             </TabItem>
 
-            <TabItem Header="Добавить категорию">
+            <TabItem Header="Категории">
                 <StackPanel>
-                    <Label Content="Название"/>
-                    <TextBox/>
-                    <Button Content="Сохранить"/>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Добавить Категорию"/>
+                        <Label Content="Название"/>
+                        <TextBox Text="{Binding TypeTitle, Mode=TwoWay}"/>
+                        <Button Content="Сохранить" Command="{Binding AddTypeCommand}"/>
+                    </StackPanel>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Удалить Категорию"/>
+                        <ComboBox Width="120" 
+                            SelectedItem="{Binding TypeToDrop}" 
+                            ItemsSource="{Binding TypesList}" 
+                            DisplayMemberPath="Title" />
+                        <Button Content="Сохранить" Command="{Binding RemoveTypeCommand}"/>
+                    </StackPanel>
                 </StackPanel>
             </TabItem>
         </TabControl>

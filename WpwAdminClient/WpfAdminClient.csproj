@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ShopLib\ShopLib.csproj" />
   </ItemGroup>
 
@@ -20,9 +24,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\ProductDetailsControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="View\SignInControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

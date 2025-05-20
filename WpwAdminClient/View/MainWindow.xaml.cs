@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using WpfAdminClient.ViewModel;
 
-namespace WpwAdminClient.View
+namespace WpfAdminClient.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -12,6 +12,7 @@ namespace WpwAdminClient.View
         {
             InitializeComponent();
             DataContext = new MainWindowVM();
+            MainContentControl.Content=new SignInControl();
         }
     }
 }

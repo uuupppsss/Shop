@@ -15,9 +15,5 @@ namespace WpfAdminClient.View
             DataContext = new MainControlVM();
         }
 
-        private void AddToCart_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

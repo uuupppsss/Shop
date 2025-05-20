@@ -1,11 +1,7 @@
-﻿using ShopLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using ShopLib;
+using System.Data.Common;
 using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using WpfAdminClient.Model;
 
@@ -13,6 +9,7 @@ namespace WpfAdminClient.Services
 {
     public class UsingService
     {
+
         private static UsingService instance;
         public static UsingService Instance
         {
@@ -24,11 +21,12 @@ namespace WpfAdminClient.Services
             }
         }
 
-        public async Task<List<ProductDTO>> GetProductsList()
+        public async Task<List<ProductDTO>> GetProductsList(string? filterword = null, int typde_id = 0, int brand_id = 0)
         {
             try
             {
-                return await Client.HttpClient.GetFromJsonAsync<List<ProductDTO>>("Products");
+                if (string.IsNullOrEmpty(filterword)) filterword = "-";
+                return await Client.HttpClient.GetFromJsonAsync<List<ProductDTO>>($"Products/{filterword}/{typde_id}/{brand_id}");
             }
             catch (Exception ex)
             {
@@ -102,5 +100,6 @@ namespace WpfAdminClient.Services
                 return null;
             }
         }
+
     }
 }

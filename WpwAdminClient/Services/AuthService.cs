@@ -1,12 +1,5 @@
 ﻿using ShopLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
 using WpfAdminClient.Model;
 
@@ -46,11 +39,6 @@ namespace WpfAdminClient.Services
         public bool IsAdmin()
         {
             return CurrentUser?.RoleId == 1|| CurrentUser?.RoleId == 3;
-        }
-
-        public bool IsAuthorized()
-        {
-            return CurrentUser?.RoleId==2;
         }
 
         //public async Task SignUp(UserDTO user)

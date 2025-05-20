@@ -11,13 +11,23 @@ public partial class Order
 
     public DateTime CreateDate { get; set; }
 
-    public DateTime? RecieveDate { get; set; }
-
     public decimal Cost { get; set; }
 
-    public int? StatusId { get; set; }
+    public int StatusId { get; set; }
+
+    public string Adress { get; set; } = null!;
+
+    public string Index { get; set; } = null!;
+
+    public string ContactPhone { get; set; } = null!;
+
+    public string FullName { get; set; } = null!;
+
+    public string Trak { get; set; } = null!;
 
     public virtual Orderstatus? Status { get; set; }
 
     public virtual User User { get; set; } = null!;
+
+    public virtual ICollection<Orderitem> Orderitems { get; set; } = new List<Orderitem>();
 }

@@ -4,7 +4,6 @@ using WpfAdminClient.Convert;
 using WpfAdminClient.Model;
 using WpfAdminClient.Services;
 using WpfAdminClient.View;
-using WpwAdminClient.View;
 
 namespace WpfAdminClient.ViewModel
 {
@@ -12,8 +11,8 @@ namespace WpfAdminClient.ViewModel
     {
         private UsingService _usingService;
 
-        private List<ProductDTO> _products;
 
+        private List<ProductDTO> _products;
         public List<ProductDTO> Products
         {
             get { return _products; }
@@ -25,7 +24,6 @@ namespace WpfAdminClient.ViewModel
         }
 
         private List<ProductDisplay> _productsView;
-
         public List<ProductDisplay> ProductsView
         {
             get { return _productsView; }
@@ -38,7 +36,6 @@ namespace WpfAdminClient.ViewModel
 
 
         private List<BrandDTO> _brands;
-
         public List<BrandDTO> Brands
         {
             get { return _brands; }
@@ -50,7 +47,6 @@ namespace WpfAdminClient.ViewModel
         }
 
         private List<ProductTypeDTO> _typesList;
-
         public List<ProductTypeDTO> TypesList
         {
             get { return _typesList; }
@@ -62,7 +58,6 @@ namespace WpfAdminClient.ViewModel
         }
 
         private ProductTypeDTO _selectedType;
-
         public ProductTypeDTO SelectedType
         {
             get { return _selectedType; }
@@ -70,11 +65,11 @@ namespace WpfAdminClient.ViewModel
             {
                 _selectedType = value;
                 Signal();
+                UpdateData();
             }
         }
 
         private BrandDTO _selectedBrand;
-
         public BrandDTO SelectedBrand
         {
             get { return _selectedBrand; }
@@ -82,6 +77,7 @@ namespace WpfAdminClient.ViewModel
             {
                 _selectedBrand = value;
                 Signal();
+                UpdateData();
             }
         }
 
@@ -93,6 +89,7 @@ namespace WpfAdminClient.ViewModel
             {
                 _searchText = value;
                 Signal();
+                UpdateData() ;
             }
         }
 
@@ -104,14 +101,16 @@ namespace WpfAdminClient.ViewModel
             ShowProductDetailsCommand = new CustomCommand<ProductDisplay>(ShowProductDetails);
         }
 
-        private async void LoadData()
+        private void LoadData()
         {
             _usingService = UsingService.Instance;
 
-            Products = await _usingService.GetProductsList();
-            Brands = await _usingService.GetBrandsList();
-            TypesList = await _usingService.GetTypesList();
-            ProductsView= ProductConverter.Instance.ConvertToProductDisplay(Products);
+            LoadTypes();
+            LoadBrands();
+
+            NoteService.Instance.ProductsCollectionChanged += UpdateData;
+            NoteService.Instance.TypesCollectionChanged += LoadTypes;
+            NoteService.Instance.BrandsCollectionChanged += LoadBrands;
         }
 
         private void ShowProductDetails(ProductDisplay product)
@@ -119,6 +118,29 @@ namespace WpfAdminClient.ViewModel
             var detailsControl = new ProductDetailsControl(product.Id);
             var mainWindow = Application.Current.MainWindow as MainWindow;
             mainWindow.MainContentControl.Content = detailsControl; 
+        }
+
+        private async void LoadTypes()
+        {
+            TypesList = await _usingService.GetTypesList();
+            TypesList.Insert(0, new ProductTypeDTO { Id = 0, Title = "Все" });
+            SelectedType = TypesList[0];
+        }
+
+        private async void LoadBrands()
+        {
+            Brands = await _usingService.GetBrandsList();
+            Brands.Insert(0, new BrandDTO { Id = 0, Title = "Все" });
+            SelectedBrand = Brands[0];
+        }
+
+        private async void UpdateData()
+        {
+            if(SelectedType!=null&&SelectedBrand!=null)
+            {
+                Products = await _usingService.GetProductsList(SearchText, SelectedType.Id, SelectedBrand.Id);
+                ProductsView = ProductConverter.Instance.ConvertToProductDisplay(Products);
+            }
         }
     }
 }

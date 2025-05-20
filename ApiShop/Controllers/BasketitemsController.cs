@@ -25,9 +25,57 @@ namespace ApiShop.Controllers
         // GET: api/Basketitems
         [Authorize (Roles ="user")]
         [HttpGet]
-        public async Task<ActionResult<List<Basketitem>>> GetBasketitems()
+        public async Task<ActionResult<List<BasketItemDTO>>> GetBasketitems()
         {
-            return await _context.Basketitems.ToListAsync();
+            var us = HttpContext.User.Claims.First();
+            int.TryParse(us.Value, out int user_id);
+            //int user_id = 1;
+            User user = await _context.Users.FirstOrDefaultAsync(u=>u.Id==user_id);
+            if (user is null) return NotFound();
+
+            var basket = _context.Basketitems.Include(i => i.Product)
+                .Where(i => i.UserId == user_id);
+
+            List<BasketItemDTO> result = new();
+            foreach(var item in basket)
+            {
+                int count = item.Count;
+                Productsize productsize = _context.Productsizes
+                    .FirstOrDefault(i => i.ProductId == item.ProductId && i.Size == item.Size);
+                if (item.Count > productsize.Count) count = productsize.Count;
+                result.Add(new BasketItemDTO
+                {
+                    Id=item.Id,
+                    UserId=item.UserId,
+                    ProductId=item.ProductId,
+                    ProductName=item.Product.Title,
+                    Size=item.Size,
+                    Count=count,
+                });
+            }
+            return Ok(result);
+            
+        }
+
+        public async Task<ActionResult<Dictionary<int,decimal>>> GetUserBasket()
+        {
+            var us = HttpContext.User.Claims.First();
+            int.TryParse(us.Value, out int user_id);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Id == user_id);
+            if (user is null) return NotFound();
+
+            var basket = _context.Basketitems.Include(i => i.Product)
+                .Where(i => i.UserId == user_id);
+            Dictionary<int, decimal> result = new();
+            foreach (var item in basket)
+            {
+                Productsize productsize = await _context.Productsizes
+                    .FirstOrDefaultAsync(i => i.ProductId == item.ProductId && i.Size == item.Size);
+                if (item.Count > productsize.Count) item.Count = productsize.Count;
+                result.Add(item.Id, item.Product.Price * item.Count);
+            }
+
+            return Ok(result);
         }
 
         // GET: api/Basketitems/5

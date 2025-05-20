@@ -17,17 +17,14 @@ using WpfAdminClient.ViewModel;
 namespace WpfAdminClient.View
 {
     /// <summary>
-    /// Логика взаимодействия для SignInControl.xaml
+    /// Логика взаимодействия для OrderDetailsControl.xaml
     /// </summary>
-    public partial class SignInControl : UserControl
+    public partial class OrderDetailsControl : UserControl
     {
-        public SignInControl()
+        public OrderDetailsControl(int product_id)
         {
             InitializeComponent();
-            DataContext = new SignInControlVM();
-            pwd_box.PasswordChar = '*';
-            pwd_box.MaxLength = 50;
-            ((SignInControlVM)DataContext).SetPassBox(pwd_box);
+            DataContext = new OrderDetailsControlVM(product_id);
         }
     }
 }

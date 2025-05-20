@@ -18,11 +18,29 @@ namespace ApiShop.Controllers
         }
 
         // GET: api/Products
-        [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        [HttpGet("{filterword}/{type_id}/{brand_id}")]
+        public async Task<ActionResult<List<Product>>> GetProducts(string filterword,int type_id,int brand_id)
         {
             List<ProductDTO> result = new();
-            foreach(var item in _context.Products.Include(p=>p.Productimages))
+            var full_products_list = await _context.Products.Include(p => p.Productimages).ToListAsync();
+            if (filterword != "-")
+            {
+                full_products_list = full_products_list.
+                   Where(p => p.Title.ToLower().Contains(filterword) ||
+               (p.Description != null && p.Description.ToLower().Contains(filterword))).ToList();
+            }
+            if (type_id > 0)
+            {
+                full_products_list = full_products_list.
+                    Where(p=>p.TypeId==type_id).ToList();
+            }
+            if (brand_id > 0)
+            {
+                full_products_list = full_products_list.
+                    Where(p => p.BrandId == brand_id).ToList();
+            }
+
+            foreach (var item in full_products_list)
             {
                 result.Add(new ProductDTO
                 {

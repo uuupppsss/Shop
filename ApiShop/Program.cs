@@ -1,4 +1,5 @@
 
+using ApiShop.Hubs;
 using ApiShop.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -37,6 +38,7 @@ namespace ApiShop
 
 
             builder.Services.AddControllers();
+            builder.Services.AddSignalR();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
@@ -85,7 +87,7 @@ namespace ApiShop
             app.UseAuthentication();
             app.UseAuthorization();
 
-
+            app.MapHub<AdminsHub>("adminshub");
             app.MapControllers();
 
             app.Run();

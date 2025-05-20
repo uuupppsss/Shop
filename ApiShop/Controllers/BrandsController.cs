@@ -85,14 +85,24 @@ namespace ApiShop.Controllers
 
         // POST: api/Brands
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize(Roles = "admin")]
-        [HttpPost]
-        public async Task<ActionResult<Brand>> PostBrand(Brand brand)
-        {
-            _context.Brands.Add(brand);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBrand", new { id = brand.Id }, brand);
+        [Authorize(Roles = "admin")]
+        [HttpGet("{title}")]
+        public async Task<ActionResult> PostBrand(string title)
+        {
+            _context.Brands.Add(new Brand
+            {
+                Title= title
+            });
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Brands/5

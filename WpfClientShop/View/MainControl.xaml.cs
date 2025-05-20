@@ -26,10 +26,5 @@ namespace WpfClientShop.View
             InitializeComponent();
             DataContext = new MainControlVM();
         }
-
-        private void AddToCart_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

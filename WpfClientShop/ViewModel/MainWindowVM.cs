@@ -13,16 +13,6 @@ namespace WpfClientShop.ViewModel
 {
     public class MainWindowVM:BaseVM
     {
-        private bool _isAdmin;
-        public bool IsAdmin
-        {
-            get { return _isAdmin; }
-            set
-            {
-                _isAdmin = value;
-                Signal();
-            }
-        }
 
         private bool _isAuthorized;
         public bool IsAuthorized
@@ -34,17 +24,6 @@ namespace WpfClientShop.ViewModel
                 Signal();
             }
         }
-
-        //private bool _isGuest;
-        //public bool IsGuest
-        //{
-        //    get => _isGuest;
-        //    private set
-        //    {
-        //        _isGuest = value;
-        //        Signal();
-        //    }
-        //}
 
         public CustomCommand HomeCommand { get; }
 
@@ -70,14 +49,8 @@ namespace WpfClientShop.ViewModel
 
         private void UpdateUserPolicy()
         {
-            IsAdmin = AuthService.Instance.IsAdmin();
-            Signal(nameof(IsAdmin));
-
             IsAuthorized=AuthService.Instance.IsAuthorized();
             Signal(nameof(IsAuthorized));
-
-            //IsGuest=!IsAuthorized;
-            //Signal(nameof(IsGuest));
         }
 
 
@@ -85,7 +58,7 @@ namespace WpfClientShop.ViewModel
         private void NavHome()
         {
             var mainControl = new MainControl();
-            var mainWindow = Application.Current.MainWindow as MainWindow;
+            var mainWindow = Application.Current.Windows.OfType<MainWindow>().SingleOrDefault(x => x.DataContext == this);
             mainWindow.MainContentControl.Content = mainControl;
         }
 

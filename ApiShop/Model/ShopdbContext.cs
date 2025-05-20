@@ -95,9 +95,13 @@ public partial class ShopdbContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Cost).HasPrecision(19, 2);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.RecieveDate).HasColumnType("datetime");
             entity.Property(e => e.StatusId).HasColumnName("Status_id");
             entity.Property(e => e.UserId).HasColumnName("User_id");
+            entity.Property(e => e.Adress).HasMaxLength(255);
+            entity.Property(e => e.Index).HasMaxLength(255);
+            entity.Property(e => e.ContactPhone).HasMaxLength(255);
+            entity.Property(e => e.FullName).HasMaxLength(255);
+            entity.Property(e => e.Trak).HasMaxLength(255);
 
             entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.StatusId)
@@ -116,12 +120,20 @@ public partial class ShopdbContext : DbContext
 
             entity.HasIndex(e => e.ProductId, "fk_orderitem_product");
 
+            entity.HasIndex(e => e.OrderId, "fk_orderitem_order");
+
             entity.Property(e => e.ProductId).HasColumnName("Product_Id");
+            entity.Property(e => e.OrderId).HasColumnName("Order_Id");
             entity.Property(e => e.Size).HasMaxLength(255);
 
             entity.HasOne(d => d.Product).WithMany(p => p.Orderitems)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("fk_orderitem_product");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.Orderitems)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("fk_orderitem_order");
+
         });
 
         modelBuilder.Entity<Orderstatus>(entity =>

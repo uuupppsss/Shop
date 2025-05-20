@@ -27,12 +27,12 @@ namespace ApiShop.Controllers
         public async Task<ActionResult<List<ProductTypeDTO>>> GetProducttypes()
         {
             List<ProductTypeDTO> result = new();
-            foreach (var item in _context.Producttypes) 
+            foreach (var item in _context.Producttypes)
             {
                 result.Add(new ProductTypeDTO
                 {
-                    Id=item.Id,
-                    Title=item.Title,
+                    Id = item.Id,
+                    Title = item.Title,
                 });
             }
             return Ok(result);
@@ -88,13 +88,22 @@ namespace ApiShop.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 
         [Authorize(Roles = "admin")]
-        [HttpPost]
-        public async Task<ActionResult<Producttype>> PostProducttype(Producttype producttype)
+        [HttpGet("{title}")]
+        public async Task<ActionResult> PostProducttype(string title)
         {
-            _context.Producttypes.Add(producttype);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetProducttype", new { id = producttype.Id }, producttype);
+            _context.Producttypes.Add(new Producttype
+            {
+                Title = title
+            });
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Producttypes/5
