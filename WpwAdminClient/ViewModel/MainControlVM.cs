@@ -93,6 +93,7 @@ namespace WpfAdminClient.ViewModel
             }
         }
 
+
         public CustomCommand<ProductDisplay> ShowProductDetailsCommand { get; set; }
 
         public MainControlVM()

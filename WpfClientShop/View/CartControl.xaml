@@ -3,10 +3,58 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfClientShop.View"
+             xmlns:conv="clr-namespace:WpfClientShop.Convert"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="10">
+            <TextBlock Text="{Binding BasketCost,Mode=TwoWay,StringFormat='Всего: {0} рублей'}" Visibility="{Binding IsBasketNotEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <Button Content="Оформить заказ" Visibility="{Binding IsBasketNotEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Command="{Binding CreateOrderCommand}" Width="200"/>
+            <ListBox ItemsSource="{Binding Basket}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="10">
+                            <TextBlock Text="{Binding ProductName}" FontWeight="Bold" FontSize="16"/>
+                            <TextBlock Text="{Binding Size, StringFormat='Размер {0} '}" FontStyle="Italic"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,5">
+                                <StackPanel.Resources>
+                                    <Style TargetType="StackPanel" x:Key="AvailabilityPanelStyle">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IfNotAbleToOrder}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Resources>
+
+                                <StackPanel Style="{StaticResource AvailabilityPanelStyle}" Orientation="Horizontal">
+                                    <Button Content="-" Command="{Binding DataContext.DecreaseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                        CommandParameter="{Binding}" Width="30"/>
+                                    <TextBlock Text="{Binding Count}" Width="30" HorizontalAlignment="Center"/>
+                                    <Button Content="+" Command="{Binding DataContext.IncreaseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                        CommandParameter="{Binding}" Width="30"/>
+                                    <TextBlock Text="{Binding Cost, StringFormat=' {0} рублей'}" FontStyle="Italic"/>
+                                </StackPanel>
+                                <Button Content="Удалить"/>
+                                <Button Content="..."/>
+
+                                <TextBlock Text="Товар недоступен для заказа" 
+                               Visibility="{Binding IfNotAbleToOrder, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                               Foreground="Red" 
+                               Margin="10,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
     </Grid>
 </UserControl>

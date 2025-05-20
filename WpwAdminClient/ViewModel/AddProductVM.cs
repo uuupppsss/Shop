@@ -12,7 +12,7 @@ namespace WpfAdminClient.ViewModel
         private string _title;
         private string _description;
         private decimal _price;
-        private List<byte[]> _images = new List<byte[]>();
+        private List<ImageDisplay> _images = new List<ImageDisplay>();
 
         public string Title
         {
@@ -44,7 +44,7 @@ namespace WpfAdminClient.ViewModel
             }
         }
 
-        public List<byte[]> Images
+        public List<ImageDisplay> Images
         {
             get => _images;
             set
@@ -177,7 +177,12 @@ namespace WpfAdminClient.ViewModel
                 foreach (var file in openFileDialog.FileNames)
                 {
                     byte[] imageBytes = File.ReadAllBytes(file);
-                    Images.Add(imageBytes);
+                    Images.Add(new ImageDisplay
+                    {
+                        Name = file,
+                        Data= imageBytes
+                    });
+                    Images = [..Images];
                 }
             }
         }
@@ -197,7 +202,7 @@ namespace WpfAdminClient.ViewModel
                     TypeId = SelectedType.Id,
                     BrandId = SelectedBrand.Id,
                 },
-                Images);
+                Images.Select(i=>i.Data).ToList());
                 return;
             }
             else MessageBox.Show("Заполните все поля");

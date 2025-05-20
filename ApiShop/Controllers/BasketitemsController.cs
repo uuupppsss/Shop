@@ -25,7 +25,7 @@ namespace ApiShop.Controllers
         // GET: api/Basketitems
         [Authorize (Roles ="user")]
         [HttpGet]
-        public async Task<ActionResult<List<BasketItemDTO>>> GetBasketitems()
+        public async Task<ActionResult<List<BasketItemDTO>>> GetUserBasketitems()
         {
             var us = HttpContext.User.Claims.First();
             int.TryParse(us.Value, out int user_id);
@@ -33,92 +33,62 @@ namespace ApiShop.Controllers
             User user = await _context.Users.FirstOrDefaultAsync(u=>u.Id==user_id);
             if (user is null) return NotFound();
 
-            var basket = _context.Basketitems.Include(i => i.Product)
-                .Where(i => i.UserId == user_id);
+            List<Basketitem> basket = await _context.Basketitems.Include(i => i.Product)
+                .Where(i => i.UserId == user_id).ToListAsync();
 
             List<BasketItemDTO> result = new();
             foreach(var item in basket)
             {
                 int count = item.Count;
-                Productsize productsize = _context.Productsizes
-                    .FirstOrDefault(i => i.ProductId == item.ProductId && i.Size == item.Size);
+                bool able = false;
+                Productsize productsize = await _context.Productsizes
+                    .FirstOrDefaultAsync(i => i.ProductId == item.ProductId && i.Size == item.Size);
                 if (item.Count > productsize.Count) count = productsize.Count;
+                if (count > 0) able = true;
                 result.Add(new BasketItemDTO
                 {
-                    Id=item.Id,
-                    UserId=item.UserId,
-                    ProductId=item.ProductId,
-                    ProductName=item.Product.Title,
-                    Size=item.Size,
-                    Count=count,
-                });
+                    Id = item.Id,
+                    UserId = item.UserId,
+                    ProductId = item.ProductId,
+                    ProductName = item.Product.Title,
+                    Size = item.Size,
+                    Count = count,
+                    IfNotAbleToOrder = !able,
+                    Cost=item.Product.Price*count,
+                }); ;
             }
             return Ok(result);
             
         }
 
-        public async Task<ActionResult<Dictionary<int,decimal>>> GetUserBasket()
+        [Authorize(Roles = "user")]
+        [HttpGet("MaxCount/{id}")]
+        public async Task<ActionResult<List<BasketItemDTO>>> GetMaxCount(int id)
         {
-            var us = HttpContext.User.Claims.First();
-            int.TryParse(us.Value, out int user_id);
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.Id == user_id);
-            if (user is null) return NotFound();
+            var item = await _context.Basketitems.FirstOrDefaultAsync(i => i.Id == id);
+            if (item == null) return NotFound();
+            var product = await _context.Products.Include(p => p.Productsizes)
+                .FirstOrDefaultAsync(p=>p.Id==item.ProductId);
+            return Ok(product.Productsizes.FirstOrDefault(s => s.Size == item.Size).Count);
 
-            var basket = _context.Basketitems.Include(i => i.Product)
-                .Where(i => i.UserId == user_id);
-            Dictionary<int, decimal> result = new();
-            foreach (var item in basket)
-            {
-                Productsize productsize = await _context.Productsizes
-                    .FirstOrDefaultAsync(i => i.ProductId == item.ProductId && i.Size == item.Size);
-                if (item.Count > productsize.Count) item.Count = productsize.Count;
-                result.Add(item.Id, item.Product.Price * item.Count);
-            }
-
-            return Ok(result);
         }
-
-        // GET: api/Basketitems/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Basketitem>> GetBasketitem(int id)
-        //{
-        //    var basketitem = await _context.Basketitems.FindAsync(id);
-
-        //    if (basketitem == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return basketitem;
-        //}
-
         // PUT: api/Basketitems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize(Roles = "user")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBasketitem(int id, Basketitem basketitem)
+        [HttpGet("Update/{id}/{count}")]
+        public async Task<ActionResult> PutBasketitem(int id, int count)
         {
-            if (id != basketitem.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(basketitem).State = EntityState.Modified;
+            Basketitem basketitem = await _context.Basketitems.FirstOrDefaultAsync(i => i.Id == id);
+            if (basketitem is null) return NotFound();
+            basketitem.Count = count;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                if (!BasketitemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
             return NoContent();
@@ -169,9 +139,5 @@ namespace ApiShop.Controllers
             return NoContent();
         }
 
-        private bool BasketitemExists(int id)
-        {
-            return _context.Basketitems.Any(e => e.Id == id);
-        }
     }
 }

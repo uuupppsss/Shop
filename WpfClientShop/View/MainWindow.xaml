@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WpfClientShop"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -13,13 +14,15 @@
         </Grid.ColumnDefinitions>
 
 
-        <StackPanel Background="#FF6200EE">
-            <TextBlock Text="Меню" FontSize="20" FontWeight="Bold" Foreground="White" Margin="0,0,0,20"/>
-            <Button Content="Товары" Margin="0,5" Background="#FF3700B3" Foreground="White" Command="{Binding HomeCommand}"/>
-            <Button Content="Корзина" Margin="0,5" Background="#FF3700B3" Foreground="White" Command="{Binding CartCommand}" />
-            <Button Content="Личный кабинет" Margin="0,5" Background="#FF3700B3" Foreground="White" Command="{Binding AccountCommand}" />
-            <Button Content="Контакты" Margin="0,5" Background="#FF3700B3" Foreground="White"/>
-            <Button Content="О нас" Margin="0,5" Background="#FF3700B3" Foreground="White"/>
+        <StackPanel Background="{StaticResource MenuBackground}" Width="200">
+            <TextBlock Text="Меню" FontSize="20" FontWeight="Bold" Foreground="{StaticResource TextForeground}" Margin="0,0,0,20"/>
+            <Button Content="Товары" Command="{Binding HomeCommand}"/>
+            <Button Content="Корзина" Command="{Binding CartCommand}"/>
+            <Button Content="Личный кабинет" Command="{Binding AccountCommand}"/>
+        </StackPanel>
+        <StackPanel Margin="5" VerticalAlignment="Bottom">
+            <Label Content="Горячая линия" FontWeight="Bold"/>
+            <TextBlock Text="+7 123 456 789" FontSize="14"/>
         </StackPanel>
 
         <ContentControl x:Name="MainContentControl" Grid.Column="1">

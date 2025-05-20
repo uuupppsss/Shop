@@ -54,6 +54,17 @@ namespace WpfClientShop.ViewModel
         private List<ProductImageDTO> _images;
         private int _currentIndex;
 
+        private bool _unauthorize;
+        public bool Unauthorize
+        {
+            get { return _unauthorize; }
+            set
+            {
+                _unauthorize = value;
+                Signal();
+            }
+        }
+
         public CustomCommand PreviousCommand { get; }
         public CustomCommand NextCommand { get; }
         public CustomCommand AddToBasketCommand {  get; }
@@ -65,6 +76,7 @@ namespace WpfClientShop.ViewModel
             AddToBasketCommand = new CustomCommand(AddToBasket);
 
             LoadData(product_id);
+            Unauthorize = AuthService.Instance.IsAuthorized();
         }
         private async void LoadData(int product_id)
         {

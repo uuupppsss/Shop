@@ -24,11 +24,12 @@ namespace WpfClientShop.Services
             }
         }
 
-        public async Task<List<ProductDTO>> GetProductsList()
+        public async Task<List<ProductDTO>> GetProductsList(string? filterword = null, int typde_id = 0, int brand_id = 0)
         {
             try
             {
-                return await Client.HttpClient.GetFromJsonAsync<List<ProductDTO>>("Products");
+                if (string.IsNullOrEmpty(filterword)) filterword = "-";
+                return await Client.HttpClient.GetFromJsonAsync<List<ProductDTO>>($"Products/{filterword}/{typde_id}/{brand_id}");
             }
             catch (Exception ex)
             {

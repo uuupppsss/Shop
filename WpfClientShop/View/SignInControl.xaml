@@ -12,7 +12,7 @@
             <TextBox Text="{Binding Username}"/>
             <Label Content="Пароль"/>
             <PasswordBox x:Name="pwd_box"/>
-            <Button Content="Войти" Command="{Binding SignInCommand}"/>
+            <Button Content="Войти" Command="{Binding SignInCommand}" Width="200"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -5,36 +5,67 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Margin="10">
+    <Grid>
+        
         <TabControl>
             <TabItem Header="Товары">
-                <StackPanel>
-                    <Label Content="Брэнд: "/>
-                    <ComboBox Width="120" 
-        SelectedItem="{Binding SelectedBrand}" 
-        ItemsSource="{Binding Brands}" 
-        DisplayMemberPath="Title" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Margin="10">
+                            <Label Content="Брэнд: "/>
+                            <ComboBox Width="200" 
+SelectedItem="{Binding SelectedBrand}" 
+ItemsSource="{Binding Brands}" 
+DisplayMemberPath="Title" HorizontalAlignment="Left" />
 
-                    <Label Content="Категория: "/>
-                    <ComboBox Width="120" 
-        SelectedItem="{Binding SelectedType}" 
-        ItemsSource="{Binding TypesList}" 
-        DisplayMemberPath="Title" />
+                            <Label Content="Категория: "/>
+                            <ComboBox Width="200" 
+SelectedItem="{Binding SelectedType}" 
+ItemsSource="{Binding TypesList}" 
+DisplayMemberPath="Title" HorizontalAlignment="Left"/>
+                        </StackPanel>
 
-                    <TextBlock Text="Название:" />
-                    <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Margin="10">
+                            <TextBlock Text="Добавить размер"/>
+                            <TextBox/>
+                            <TextBlock Text="Количество"/>
+                            <TextBox/>
+                            <Button Content="Добавить"/>
+                        </StackPanel>
+                        <StackPanel Margin="10" >
+                            <TextBlock Text="Название:" />
+                            <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <TextBlock Text="Описание:" />
-                    <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Height="100" />
+                            <TextBlock Text="Описание:" />
+                            <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
+                                     TextWrapping="Wrap" Height="100" Width="300"/>
 
-                    <TextBlock Text="Цена:" />
-                    <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="Цена:" />
+                            <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </StackPanel>
 
-                    <Button Content="Добавить изображение" Command="{Binding AddImageCommand}" />
-                    <ListBox ItemsSource="{Binding Images}" Height="100" />
 
-                    <Button Content="Сохранить продукт" Command="{Binding SaveCommand}" />
-                </StackPanel>
+
+                    <StackPanel Grid.Row="1">
+                        <Button Content="Добавить изображение" Command="{Binding AddImageCommand}" />
+                        <ListBox ItemsSource="{Binding Images}" Height="100" >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <Button Content="Сохранить продукт" Command="{Binding SaveCommand}" />
+                    </StackPanel>
+                </Grid>
             </TabItem>
 
             <TabItem Header="Бренды">
@@ -50,7 +81,7 @@
                         <ComboBox Width="120" 
                         SelectedItem="{Binding BrandToDrop}" 
                         ItemsSource="{Binding Brands}" 
-                        DisplayMemberPath="Title" />
+                        DisplayMemberPath="Title" HorizontalAlignment="Left"/>
 
                         
                         <Button Content="Удалить" Command="{Binding RemoveBrandCommand}"/>
@@ -72,7 +103,7 @@
                         <ComboBox Width="120" 
                             SelectedItem="{Binding TypeToDrop}" 
                             ItemsSource="{Binding TypesList}" 
-                            DisplayMemberPath="Title" />
+                            DisplayMemberPath="Title" HorizontalAlignment="Left"/>
                         <Button Content="Сохранить" Command="{Binding RemoveTypeCommand}"/>
                     </StackPanel>
                 </StackPanel>

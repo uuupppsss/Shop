@@ -13,8 +13,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Авторизация" Margin="10" Click="SignInClick"/>
-            <Button Content="Регистрация" Margin="10" Click="SignUpClick"/>
+            <Button Content="Авторизация" Margin="10" Click="SignInClick" Width="200"/>
+            <Button Content="Регистрация" Margin="10" Click="SignUpClick" Width="200"/>
         </StackPanel>
 
         <ContentControl x:Name="MainContentControl" Grid.Row="1">

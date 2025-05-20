@@ -43,11 +43,6 @@ namespace WpfClientShop.Services
             CurrentUserChanged?.Invoke();
         }
 
-        public bool IsAdmin()
-        {
-            return CurrentUser?.RoleId == 1|| CurrentUser?.RoleId == 3;
-        }
-
         public bool IsAuthorized()
         {
             return CurrentUser?.RoleId==2;

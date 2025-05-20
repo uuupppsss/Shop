@@ -1,6 +1,9 @@
-﻿using System;
+﻿using ShopLib;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,6 +39,44 @@ namespace WpfClientShop.Services
                 
             }
             
+        }
+
+        public async Task<int> GetBasketItemMaxCount(int item_id)
+        {
+            try
+            {
+                return await Client.HttpClient.GetFromJsonAsync<int>($"Basketitems/MaxCount/{item_id}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return 0;
+            }
+        }
+
+        public async Task<List<BasketItemDTO>> GetUserBasket()
+        {
+            try
+            {
+                return await Client.HttpClient.GetFromJsonAsync<List<BasketItemDTO>>($"Basketitems");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task UpdateBasketItem(int id, int count)
+        {
+            try
+            {
+                await Client.HttpClient.GetAsync($"Basketitems/Update/{id}/{count}");
+            }
+            catch( Exception ex ) 
+            {
+                MessageBox.Show(ex.Message );
+            }
         }
     }
 }

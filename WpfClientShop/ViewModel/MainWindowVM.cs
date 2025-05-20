@@ -82,7 +82,7 @@ namespace WpfClientShop.ViewModel
         {
             if(IsAuthorized)
             {
-                var accountControl = new AccountControl();
+                var accountControl = new UserDataControl();
                 var mainWindow = Application.Current.MainWindow as MainWindow;
                 mainWindow.MainContentControl.Content = accountControl;
             }

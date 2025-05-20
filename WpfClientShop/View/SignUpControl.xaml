@@ -19,8 +19,8 @@
             
             <Label Content="Повторите пароль"/>
             <PasswordBox x:Name="repeat_pwd_box"/>
-            
-            <Button Content="Зарегистрироваться" Command="{Binding SignUpCommand}"/>
+
+            <Button Margin="10" Content="Зарегистрироваться" Command="{Binding SignUpCommand}" Width="200"/>
         </StackPanel>
     </Grid>
 </UserControl>
