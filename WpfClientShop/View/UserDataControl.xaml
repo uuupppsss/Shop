@@ -17,10 +17,9 @@
             <TextBlock Text="Телефон:" FontWeight="Bold"/>
             <TextBox Text="{Binding User.Phone}" IsReadOnly="True" Margin="0,0,0,10"/>
 
-
-            <Button Content="Редактировать данные" Command="{Binding EditCommand}" Margin="10" Width="200"/>
+            
             <Button Content="Выйти из аккаунта" Command="{Binding SignOutCommand}" Margin="10" Width="200"/>
-            <Button Content="Удалить аккаунт" Command="{Binding RemoveAccountCommand}" Margin="10" Width="200"/>
+            <Button Content="Заказы"/>
         </StackPanel>
     </Grid>
 </UserControl>

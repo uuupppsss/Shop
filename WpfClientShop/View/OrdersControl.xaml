@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="WpfClientShop.View.OrdersControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfClientShop.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <ComboBox Width="120" 
+           SelectedItem="{Binding SelectedStatus,Mode=TwoWay}" 
+           ItemsSource="{Binding Statuses}" 
+           DisplayMemberPath="Title" Margin="10"/>
+        </StackPanel>
+
+        <ListView ItemsSource="{Binding Orders}" Grid.Row="1">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Номер" DisplayMemberBinding="{Binding Id}" Width="50"/>
+                    <GridViewColumn Header="Стоимость" DisplayMemberBinding="{Binding Cost}" Width="100"/>
+                    <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="100"/>
+                    <GridViewColumn Header="Трэк-номер" DisplayMemberBinding="{Binding trak}" Width="100"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

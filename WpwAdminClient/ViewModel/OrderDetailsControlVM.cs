@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfAdminClient.Model;
 using WpfAdminClient.Services;
+using WpfAdminClient.View;
 
 namespace WpfAdminClient.ViewModel
 {
@@ -23,19 +25,36 @@ namespace WpfAdminClient.ViewModel
             }
         }
 
+        private List<OrderItemDTO> _items;
+        public List<OrderItemDTO> Items
+        {
+            get { return _items; }
+            set 
+            {
+                _items = value; 
+                Signal() ;
+            }
+        }
 
+        public CustomCommand EditCommand { get; }
         public OrderDetailsControlVM(int order_id)
         {
             _orderId=order_id;
-        }
-        public OrderDetailsControlVM()
-        {
+            EditCommand = new CustomCommand(Edit);
             LoadData();
         }
+
 
         private async void LoadData()
         {
             Order = await AdminService.Instance.GetOrderDetails(_orderId);
+            Items = await AdminService.Instance.GetOrderItems(_orderId);
+        }
+
+        private async void Edit()
+        {
+            var win = new UpdateOrderWin(_orderId);
+            win.ShowDialog();
         }
     }
 }

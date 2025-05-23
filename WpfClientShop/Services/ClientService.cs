@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using WpfClientShop.Model;
@@ -76,6 +78,36 @@ namespace WpfClientShop.Services
             catch( Exception ex ) 
             {
                 MessageBox.Show(ex.Message );
+            }
+        }
+
+        public async Task CreateOrder(OrderDTO order)
+        {
+            try
+            {
+                string json = JsonSerializer.Serialize(order);
+                await Client.HttpClient.PostAsync("Orders", 
+                    new StringContent(json,Encoding.UTF8, "application/json"));
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            MessageBox.Show("Зааз успешно добавлен");
+        }
+
+        public async Task<List<OrderDTO>> GetUserOrders()
+        {
+            try
+            {
+                return await Client.HttpClient.GetFromJsonAsync<List<OrderDTO>>("Orders/User");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
             }
         }
     }

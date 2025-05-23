@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ApiShop.Model;
 using ShopLib;
 using Microsoft.AspNetCore.Authorization;
+using System.Runtime.InteropServices;
 
 namespace ApiShop.Controllers
 {
@@ -65,6 +66,12 @@ namespace ApiShop.Controllers
 
             if (product == null) return NotFound();
 
+            var brand=await _context.Brands.FindAsync(product.BrandId);
+            if (brand == null) return NotFound();
+
+            var type=await _context.Producttypes.FindAsync(product.TypeId);
+            if (type == null) return NotFound();
+
             ProductDTO result = new ProductDTO
             {
                 Id=product.Id,
@@ -74,6 +81,8 @@ namespace ApiShop.Controllers
                 TimeBought = product.TimeBought,
                 TypeId = product.TypeId,
                 BrandId = product.BrandId,
+                BrandTitle=brand.Title,
+                TypeTitle=type.Title,
 
             };
 
@@ -84,32 +93,24 @@ namespace ApiShop.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(ProductDTO product)
         {
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
+            var found_product=await _context.Products.FirstOrDefaultAsync(p=>p.Id==product.Id);
+            if(found_product == null) return NotFound();
 
-            _context.Entry(product).State = EntityState.Modified;
+            found_product.Price = product.Price;
+            found_product.Description = product.Description;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Products
@@ -151,9 +152,6 @@ namespace ApiShop.Controllers
             return NoContent();
         }
 
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
-        }
+       
     }
 }

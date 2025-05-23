@@ -16,6 +16,7 @@ namespace WpfClientShop.ViewModel
 			}
 		}
 
+		
         public UserDataControlVM()
         {
             User=AuthService.Instance.CurrentUser;

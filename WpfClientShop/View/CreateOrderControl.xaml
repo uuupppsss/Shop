@@ -28,7 +28,7 @@
             <TextBlock Text="Стоимость:" />
             <TextBlock Text="{Binding Order.Cost,StringFormat=' {0} рублей'}" />
 
-            <Button Content="Сохранить" Margin="10" Width="200"/>
+            <Button Content="Сохранить" Margin="10" Width="200" Command="{Binding CreateOrder}"/>
             <Button Content="Назад" Margin="0,10,0,0" Width="200"/>
         </StackPanel>
         <StackPanel Grid.Row="1">

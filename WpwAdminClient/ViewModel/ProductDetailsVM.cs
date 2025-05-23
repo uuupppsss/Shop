@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using WpfAdminClient.Model;
 using WpfAdminClient.Services;
+using WpfAdminClient.View;
 
 namespace WpfAdminClient.ViewModel
 {
@@ -50,10 +51,13 @@ namespace WpfAdminClient.ViewModel
         public CustomCommand PreviousCommand { get; }
         public CustomCommand NextCommand { get; }
 
+        public CustomCommand UpdateProductCommand { get; }
+
         public ProductDetailsVM(int product_id)
         {
             PreviousCommand = new CustomCommand(Previous);
             NextCommand = new CustomCommand(Next);
+            UpdateProductCommand=new CustomCommand(UpdateProduct);
 
             LoadData(product_id);
         }
@@ -66,6 +70,13 @@ namespace WpfAdminClient.ViewModel
             ProductSizes=await UsingService.Instance.GetProductSizes(product_id);
 
         }
+
+        private void UpdateProduct()
+        {
+            var win = new UpdateProductWin(Product.Id);
+            win.ShowDialog();
+        }
+
         private BitmapImage GetCurrentImage()
         {
             if (_images!=null&&_images.Count > 0)

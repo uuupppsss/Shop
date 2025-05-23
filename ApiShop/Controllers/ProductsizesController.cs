@@ -40,62 +40,73 @@ namespace ApiShop.Controllers
             return Ok(result);
         }
 
-        // GET: api/Productsizes/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Productsize>> GetProductsize(int id)
-        //{
-        //    var productsize = await _context.Productsizes.FindAsync(id);
-
-        //    if (productsize == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return productsize;
-        //}
-
         // PUT: api/Productsizes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize(Roles = "admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProductsize(int id, Productsize productsize)
+        [HttpPut("{product_id}")]
+        public async Task<IActionResult> PutProductsize(int product_id, List<ProductSizeDTO> productsize)
         {
-            if (id != productsize.Id)
+            var newSizes = productsize.Where(s => s.Id == 0);
+            foreach (var s in newSizes)
             {
-                return BadRequest();
+                _context.Productsizes.Add(new Productsize
+                {
+                    Size = s.Size,
+                    Count = s.Count,
+                    ProductId = product_id
+                });
             }
 
-            _context.Entry(productsize).State = EntityState.Modified;
+            var updatedSizes = productsize.Where(s => s.Id == product_id);
+            foreach (var s in updatedSizes)
+            {
+                var found_size = await _context.Productsizes
+                    .FirstOrDefaultAsync(s1 => s1.Id == s.Id);
+                if (found_size != null)
+                {
+                    found_size.Size = s.Size;
+                    found_size.Count = s.Count;
+                }
+            }
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                if (!ProductsizeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/Productsizes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize(Roles = "admin")]
-        [HttpPost]
-        public async Task<ActionResult<Productsize>> PostProductsize(Productsize productsize)
+        [HttpPost("{product_id}")]
+        public async Task<ActionResult> PostProductsize(int product_id, List<ProductSizeDTO> sizes)
         {
-            _context.Productsizes.Add(productsize);
-            await _context.SaveChangesAsync();
+            foreach (var s in sizes)
+            {
+                _context.Productsizes.Add(new Productsize
+                {
+                    Size = s.Size,
+                    ProductId = product_id,
+                    Count = s.Count
+                });
+            }
 
-            return CreatedAtAction("GetProductsize", new { id = productsize.Id }, productsize);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
         }
 
         // DELETE: api/Productsizes/5
@@ -115,9 +126,6 @@ namespace ApiShop.Controllers
             return NoContent();
         }
 
-        private bool ProductsizeExists(int id)
-        {
-            return _context.Productsizes.Any(e => e.Id == id);
-        }
+
     }
 }

@@ -24,6 +24,8 @@
             <TextBlock Text="{Binding Product.Title}" FontSize="16" FontWeight="Bold" Margin="5"/>
             <TextBlock Text="{Binding Product.Description}" FontSize="16" Margin="5"/>
             <TextBlock Text="{Binding Product.Price, StringFormat='Цена: {0} руб.'}" Foreground="#888"/>
+            <TextBlock Text="{Binding Product.TypeTitle}"/>
+            <TextBlock Text="{Binding Product.BrandTitle}"/>
             <TextBlock FontSize="20" FontWeight="Bold" Margin="10">Доступные размеры</TextBlock>
             <ListBox ItemsSource="{Binding ProductSizes}" 
                      SelectedItem="{Binding SelectedSize}" 

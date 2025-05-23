@@ -143,14 +143,49 @@ namespace WpfAdminClient.ViewModel
             }
         }
 
+        private List<ProductSizeDTO> _sizes;
+        public List<ProductSizeDTO> Sizes
+        {
+            get { return _sizes; }
+            set 
+            {
+                _sizes = value;
+                Signal();
+            }
+        }
+
+        private string _size;
+        public string Size
+        {
+            get { return _size; }
+            set 
+            {
+                _size = value;
+                Signal();
+            }
+        }
+
+        private int _sizeCount;
+        public int SizeCount
+        {
+            get { return _sizeCount; }
+            set 
+            {
+                _sizeCount = value;
+                Signal();
+            }
+        }
 
 
         public CustomCommand AddImageCommand { get; }
+        public CustomCommand AddProductSize { get; }
+
         public CustomCommand SaveCommand { get; }
         public CustomCommand AddTypeCommand { get; }
         public CustomCommand AddBrandCommand { get; }
         public CustomCommand RemoveTypeCommand {  get; }
         public CustomCommand RemoveBrandCommand { get; }
+        public CustomCommand ClearSizes { get; }
 
         public AddProductVM()
         {
@@ -158,8 +193,10 @@ namespace WpfAdminClient.ViewModel
             SaveCommand = new CustomCommand(SaveProduct);
             AddTypeCommand = new CustomCommand(SaveType);
             AddBrandCommand = new CustomCommand(SaveBrand);
+            AddProductSize = new CustomCommand(AddSize);
+            ClearSizes = new CustomCommand(ClearSizesList);
 
-            RemoveBrandCommand=new CustomCommand(RemoveBrand);
+            RemoveBrandCommand =new CustomCommand(RemoveBrand);
             RemoveTypeCommand = new CustomCommand(RemoveType);
             LoadData();
         }
@@ -192,8 +229,13 @@ namespace WpfAdminClient.ViewModel
 
             if (!string.IsNullOrWhiteSpace(Title) &&
                 !string.IsNullOrWhiteSpace(Description) &&
-                Price > 0 && SelectedBrand != null && SelectedType != null&&Images?.Count!=null)
+                Price > 0 && SelectedBrand != null && SelectedType != null&&Images!=null)
             {
+                if(Sizes.Count==0||Images?.Count==0) 
+                {
+                    MessageBox.Show("Добавьте размеры и картинки");
+                    return;
+                }
                 await AdminService.Instance.AddNewProduct(new ProductDTO
                 {
                     Title = Title,
@@ -202,7 +244,7 @@ namespace WpfAdminClient.ViewModel
                     TypeId = SelectedType.Id,
                     BrandId = SelectedBrand.Id,
                 },
-                Images.Select(i=>i.Data).ToList());
+                Images.Select(i=>i.Data).ToList(),Sizes);
                 return;
             }
             else MessageBox.Show("Заполните все поля");
@@ -214,12 +256,14 @@ namespace WpfAdminClient.ViewModel
         {
             Brands = await UsingService.Instance.GetBrandsList();
             TypesList = await UsingService.Instance.GetTypesList();
-            
+            Sizes = new();
+
             NoteService.Instance.TypesCollectionChanged+= 
                 async ()=> TypesList = await UsingService.Instance.GetTypesList();
             NoteService.Instance.BrandsCollectionChanged +=
                 async () => Brands = await UsingService.Instance.GetBrandsList();
         }
+
 
         private async void SaveType()
         {
@@ -265,6 +309,26 @@ namespace WpfAdminClient.ViewModel
                 }
             }
             else MessageBox.Show("Выберите бренд");
+        }
+
+        private void AddSize()
+        {
+            ProductSizeDTO size = new ProductSizeDTO
+            {
+                Size = Size,
+                Count=SizeCount,
+                ProductId=0
+            };
+            Sizes.Add(size);
+
+            Sizes = [.. Sizes];
+            Size = string.Empty;
+            SizeCount = 0;
+        }
+
+        private void ClearSizesList()
+        {
+            Sizes = new();
         }
     }
 }

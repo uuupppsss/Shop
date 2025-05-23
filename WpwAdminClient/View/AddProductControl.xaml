@@ -31,10 +31,10 @@ DisplayMemberPath="Title" HorizontalAlignment="Left"/>
 
                         <StackPanel Margin="10">
                             <TextBlock Text="Добавить размер"/>
-                            <TextBox/>
+                            <TextBox Text="{Binding Size}"/>
                             <TextBlock Text="Количество"/>
-                            <TextBox/>
-                            <Button Content="Добавить"/>
+                            <TextBox Text="{Binding SizeCount}"/>
+                            <Button Content="Добавить" Command="{Binding AddProductSize}"/>
                         </StackPanel>
                         <StackPanel Margin="10" >
                             <TextBlock Text="Название:" />
@@ -47,12 +47,27 @@ DisplayMemberPath="Title" HorizontalAlignment="Left"/>
                             <TextBlock Text="Цена:" />
                             <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock Text="Размеры"/>
+                            <Button Content="Очистить" Command="{Binding ClearSizes}"/>
+                            <ListBox ItemsSource="{Binding Sizes}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Size}"/>
+                                            <TextBlock Text="{Binding Count, StringFormat=' {0} шт'}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
                     </StackPanel>
 
 
 
                     <StackPanel Grid.Row="1">
-                        <Button Content="Добавить изображение" Command="{Binding AddImageCommand}" />
+                        <Button Content="Выбрать изображения" Command="{Binding AddImageCommand}" />
                         <ListBox ItemsSource="{Binding Images}" Height="100" >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -68,7 +83,7 @@ DisplayMemberPath="Title" HorizontalAlignment="Left"/>
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Бренды">
+            <TabItem Header="Бренды" HorizontalAlignment="Right" Margin="0,-2,-2,0" Width="82">
                 <StackPanel>
                     <StackPanel Margin="10">
                         <TextBlock Text="Добавить Бренд"/>
@@ -104,7 +119,7 @@ DisplayMemberPath="Title" HorizontalAlignment="Left"/>
                             SelectedItem="{Binding TypeToDrop}" 
                             ItemsSource="{Binding TypesList}" 
                             DisplayMemberPath="Title" HorizontalAlignment="Left"/>
-                        <Button Content="Сохранить" Command="{Binding RemoveTypeCommand}"/>
+                        <Button Content="Удалить" Command="{Binding RemoveTypeCommand}"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>

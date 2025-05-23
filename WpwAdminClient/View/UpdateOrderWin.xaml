@@ -1,0 +1,16 @@
+﻿<Window x:Class="WpfAdminClient.View.UpdateOrderWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfAdminClient.View"
+        mc:Ignorable="d"
+        Title="UpdateOrderWin" Height="200" Width="200">
+    <StackPanel>
+        <TextBlock Text="Статус"/>
+        <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}"/>
+        <TextBlock Text="Трэк-номер"/>
+        <TextBox Text="{Binding Trak}"/>
+        <Button Content="Сохранить" Command="{Binding SaveCommand}"/>
+    </StackPanel>
+</Window>

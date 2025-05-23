@@ -12,19 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfAdminClient.ViewModel;
+using WpfClientShop.ViewModel;
 
-namespace WpfAdminClient.View
+namespace WpfClientShop.View
 {
     /// <summary>
-    /// Логика взаимодействия для OrderDetailsControl.xaml
+    /// Логика взаимодействия для OrdersControl.xaml
     /// </summary>
-    public partial class OrderDetailsControl : UserControl
+    public partial class OrdersControl : UserControl
     {
-        public OrderDetailsControl(int order_id)
+        public OrdersControl()
         {
             InitializeComponent();
-            DataContext = new OrderDetailsControlVM(order_id);
+            DataContext = new OrdersControlVM();
         }
     }
 }

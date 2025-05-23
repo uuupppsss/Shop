@@ -20,6 +20,10 @@ namespace ShopLib
 
         public int BrandId { get; set; }
 
+        public string? BrandTitle { get; set; }
+
+        public string? TypeTitle { get; set; }
+
         public int TimeBought { get; set; } = 0;
 
         public byte[]? HeaderImage { get; set; } = null;

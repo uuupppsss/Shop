@@ -10,21 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfAdminClient.ViewModel;
 
 namespace WpfAdminClient.View
 {
     /// <summary>
-    /// Логика взаимодействия для OrderDetailsControl.xaml
+    /// Логика взаимодействия для UpdateOrderWin.xaml
     /// </summary>
-    public partial class OrderDetailsControl : UserControl
+    public partial class UpdateOrderWin : Window
     {
-        public OrderDetailsControl(int order_id)
+        public UpdateOrderWin(int order_id)
         {
             InitializeComponent();
-            DataContext = new OrderDetailsControlVM(order_id);
         }
     }
 }

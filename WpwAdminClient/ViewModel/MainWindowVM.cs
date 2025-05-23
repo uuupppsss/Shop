@@ -57,7 +57,9 @@ namespace WpfAdminClient.ViewModel
         {
             if(IsAdmin())
             {
-                
+                var ordersControl = new OrdersListControl();
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                mainWindow.MainContentControl.Content = ordersControl;
             }
         }
 

@@ -22,21 +22,8 @@ namespace WpfAdminClient.Services
                 return instance;
             }
         }
-        public AdminService()
-        {
-            InitializeAdminConnection();
-        }
-        public event Action OrdersCollectionChanged;
 
-        public async void InitializeAdminConnection()
-        {
-            _connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5226/adminshub")
-                .Build();
-            await _connection.StartAsync();
-        }
-
-        public async Task AddNewProduct(ProductDTO product, List<byte[]> images)
+        public async Task AddNewProduct(ProductDTO product, List<byte[]> images,List<ProductSizeDTO> sizes)
         {
             try
             {
@@ -46,12 +33,14 @@ namespace WpfAdminClient.Services
 
                 int addedProductId = await responce.Content.ReadFromJsonAsync<int>();
                 await AddProductImages(addedProductId, images);
-                await _connection.InvokeAsync("ProductsCollectionChanged");
+                await AddProductSizes(addedProductId, sizes);
             }
             catch (Exception ex) 
             {
                 MessageBox.Show(ex.Message);
+                return;
             }
+            MessageBox.Show("Данные успешно сохранены");
         }
 
         private async Task AddProductImages(int product_id,List<byte[]> images)
@@ -60,6 +49,22 @@ namespace WpfAdminClient.Services
             {
                 string json = JsonSerializer.Serialize(images);
                 await Client.HttpClient.PostAsync($"Productimages/{product_id}", 
+                    new StringContent(json, Encoding.UTF8, "application/json"));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+
+        }
+
+        private async Task AddProductSizes(int product_id, List<ProductSizeDTO> sizes)
+        {
+            try
+            {
+                string json = JsonSerializer.Serialize(sizes);
+                await Client.HttpClient.PostAsync($"Productsizes/{product_id}",
                     new StringContent(json, Encoding.UTF8, "application/json"));
             }
             catch (Exception ex)
@@ -167,5 +172,50 @@ namespace WpfAdminClient.Services
             }
         }
 
+        public async Task UpdateProduct(ProductDTO product, List<ProductSizeDTO> sizes)
+        {
+            try
+            {
+                string json1=JsonSerializer.Serialize(product);
+                await Client.HttpClient.PutAsync("Products", 
+                    new StringContent(json1, Encoding.UTF8, "application/json"));
+                string json2 = JsonSerializer.Serialize(sizes);
+                await Client.HttpClient.PutAsync($"Productsizes/{product.Id}",
+                    new StringContent(json1, Encoding.UTF8, "application/json"));
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            MessageBox.Show("Данные успешно сохранены");
+        }
+    
+        public async Task UpdateOrder(int id, int status_id, string trak)
+        {
+            try
+            {
+                await Client.HttpClient.GetAsync($"Orders/Update/{id}/{status_id}/{trak}")
+            }
+            catch ( Exception ex )
+            {
+                MessageBox.Show (ex.Message);
+                return;
+            }
+            MessageBox.Show("Данные успешно обновлены");
+        }
+
+        public async Task<List<OrderItemDTO>> GetOrderItems(int id)
+        {
+            try
+            {
+                return await Client.HttpClient.GetFromJsonAsync<List<OrderItemDTO>>($"Orders/Items/{id}")
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show (ex.Message);
+                return null;
+            }
+        }
     }
 }

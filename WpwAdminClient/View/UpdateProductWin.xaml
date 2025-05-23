@@ -1,0 +1,49 @@
+﻿<Window x:Class="WpfAdminClient.View.UpdateProductWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfAdminClient.View"
+        mc:Ignorable="d"
+        Title="UpdateProductWin" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Width="400">
+                <TextBlock Text="Название "/>
+                <TextBlock Text="{Binding Product.Title,Mode=TwoWay}"/>
+                <TextBlock Text="Описание "/>
+                <TextBox Text="{Binding Product.Description,Mode=TwoWay}"/>
+                <TextBlock Text="Цена "/>
+                <TextBox Text="{Binding Product.Price,Mode=TwoWay}"/>
+                <TextBlock Text="Размеры"/>
+                <ListBox ItemsSource="{Binding ProductSizes}" 
+         SelectedItem="{Binding SelectedSize}" Margin="10">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Size,StringFormat='Размер {0} '}"/>
+                                <TextBlock Text="{Binding Count,StringFormat='Осталось {0} шт.'}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Button Content="Редактировать" Command="{Binding UpdateSizeCommand}"/>
+            </StackPanel>
+
+            <StackPanel>
+                <TextBlock Text="Добавить размер"/>
+                <TextBlock Text="Размер"/>
+                <TextBox Text="{Binding Size}"/>
+                <TextBlock Text="Количество"/>
+                <TextBox Text="{Binding SizeCount}"/>
+                <Button Content="Сохранить" Command="{Binding AddNewSize}"/>
+                <Button Content="Отмена" Command="{Binding CancelChanges}"/>
+            </StackPanel>
+        </StackPanel>
+        <Button Content="Сохранить продукт" Grid.Row="1" Command="{Binding SaveCommand}"/>
+    </Grid>
+</Window>
