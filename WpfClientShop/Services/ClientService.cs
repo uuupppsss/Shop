@@ -86,7 +86,7 @@ namespace WpfClientShop.Services
             try
             {
                 string json = JsonSerializer.Serialize(order);
-                await Client.HttpClient.PostAsync("Orders", 
+                var responce=await Client.HttpClient.PostAsync("Orders", 
                     new StringContent(json,Encoding.UTF8, "application/json"));
 
             }
@@ -95,7 +95,7 @@ namespace WpfClientShop.Services
                 MessageBox.Show(ex.Message);
                 return;
             }
-            MessageBox.Show("Зааз успешно добавлен");
+            MessageBox.Show("Заказ успешно добавлен");
         }
 
         public async Task<List<OrderDTO>> GetUserOrders()

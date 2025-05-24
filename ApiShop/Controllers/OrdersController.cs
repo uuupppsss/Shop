@@ -167,8 +167,8 @@ namespace ApiShop.Controllers
             if (user_id == 0) return NotFound();
             var order = new Order
             {
-                UserId= sent_order.UserId,
-                CreateDate= sent_order.CreateDate,
+                UserId= user_id,
+                CreateDate = sent_order.CreateDate,
                 Cost= sent_order.Cost,
                 StatusId=1,
                 Adress=sent_order.Adress,
@@ -204,9 +204,6 @@ namespace ApiShop.Controllers
             return Ok();
         }
 
-        private bool OrderExists(int id)
-        {
-            return _context.Orders.Any(e => e.Id == id);
-        }
+       
     }
 }

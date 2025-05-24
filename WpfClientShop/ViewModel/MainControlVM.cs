@@ -97,6 +97,7 @@ namespace WpfClientShop.ViewModel
             {
                 _searchText = value;
                 Signal();
+                UpdateData();
             }
         }
 
@@ -123,6 +124,15 @@ namespace WpfClientShop.ViewModel
             var detailsControl = new ProductDetailsControl(product.Id);
             var mainWindow = Application.Current.MainWindow as MainWindow;
             mainWindow.MainContentControl.Content = detailsControl; 
+        }
+
+        private async void UpdateData()
+        {
+            if (SelectedType != null && SelectedBrand != null)
+            {
+                Products = await _usingService.GetProductsList(SearchText, SelectedType.Id, SelectedBrand.Id);
+                ProductsView = ProductConverter.Instance.ConvertToProductDisplay(Products);
+            }
         }
     }
 }

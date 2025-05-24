@@ -22,7 +22,7 @@
         <ListView ItemsSource="{Binding Orders}" Grid.Row="1">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="50"/>
+                    <GridViewColumn Header="Номер" DisplayMemberBinding="{Binding Id}" Width="50"/>
                     <GridViewColumn Header="Дата создания" DisplayMemberBinding="{Binding CreateDate}" Width="100"/>
                     <GridViewColumn Header="Стоимость" DisplayMemberBinding="{Binding Cost}" Width="100"/>
                     <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="100"/>

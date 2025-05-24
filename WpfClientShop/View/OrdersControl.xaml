@@ -12,12 +12,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
+        <!--<StackPanel Orientation="Horizontal">
             <ComboBox Width="120" 
            SelectedItem="{Binding SelectedStatus,Mode=TwoWay}" 
            ItemsSource="{Binding Statuses}" 
            DisplayMemberPath="Title" Margin="10"/>
-        </StackPanel>
+        </StackPanel>-->
 
         <ListView ItemsSource="{Binding Orders}" Grid.Row="1">
             <ListView.View>

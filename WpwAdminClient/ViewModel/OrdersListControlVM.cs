@@ -17,7 +17,11 @@ namespace WpfAdminClient.ViewModel
 		public List<OrderDTO> Orders
 		{
 			get { return _orders; }
-			set { _orders = value; }
+			set 
+            {
+                _orders = value;
+                Signal();
+            }
 		}
 
         private List<OrderStatusDTO> _statuses;
@@ -40,6 +44,7 @@ namespace WpfAdminClient.ViewModel
             {
                 _selectedStatus = value;
                 Signal();
+                UpdateData();
             }
         }
 
@@ -60,6 +65,7 @@ namespace WpfAdminClient.ViewModel
             Statuses.Insert(0, new OrderStatusDTO { Id = 0, Title = "Все" });
             SelectedStatus = Statuses[0];
             NoteService.Instance.OrdersCollectionChanged += UpdateData;
+            Orders = await AdminService.Instance.GetOrdersList(SelectedStatus.Id);
         }
 
         private async void UpdateData()
@@ -72,7 +78,7 @@ namespace WpfAdminClient.ViewModel
 
         private void ViewDetails(int order_id)
         {
-            var ordersControl = new ProductDetailsControl(order_id);
+            var ordersControl = new OrderDetailsControl(order_id);
             var mainWindow = Application.Current.MainWindow as MainWindow;
             mainWindow.MainContentControl.Content = ordersControl;
         }

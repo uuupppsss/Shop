@@ -13,14 +13,14 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <StackPanel Margin="10">
-                <TextBlock Text="{Binding Order.FullName}" FontWeight="Bold" FontSize="16"/>
-                <TextBlock Text="{Binding Order.Cost}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding Order.Status}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding Order.Adress}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding Order.Index}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding Order.ContactPhone}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding Order.Trak}" Margin="0,5,0,0"/>
-                <TextBlock Text="{Binding Order.CreateDate}" Margin="0,5,0,0" />
+                <TextBlock Text="{Binding Order.FullName,StringFormat='Заказчик {0}'}" FontWeight="Bold" FontSize="16"/>
+                <TextBlock Text="{Binding Order.Cost,StringFormat='Стоимость {0}'}" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding Order.Status,StringFormat='Статус {0}'}" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding Order.Adress,StringFormat='Адрес {0}'}" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding Order.Index,StringFormat='почтовый индекс {0}'}" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding Order.ContactPhone,StringFormat='Контактный телефон {0}'}" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding Order.Trak,StringFormat='Трек-номер {0}'}" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding Order.CreateDate,StringFormat='Дата создания {0}'}" Margin="0,5,0,0" />
             </StackPanel>
             <StackPanel>
                 <TextBlock Text="Товары в заказе"/>

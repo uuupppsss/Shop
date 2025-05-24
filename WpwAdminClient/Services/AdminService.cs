@@ -195,7 +195,7 @@ namespace WpfAdminClient.Services
         {
             try
             {
-                await Client.HttpClient.GetAsync($"Orders/Update/{id}/{status_id}/{trak}")
+                await Client.HttpClient.GetAsync($"Orders/Update/{id}/{status_id}/{trak}");
             }
             catch ( Exception ex )
             {
@@ -209,7 +209,7 @@ namespace WpfAdminClient.Services
         {
             try
             {
-                return await Client.HttpClient.GetFromJsonAsync<List<OrderItemDTO>>($"Orders/Items/{id}")
+                return await Client.HttpClient.GetFromJsonAsync<List<OrderItemDTO>>($"Orders/Items/{id}");
             }
             catch (Exception ex)
             {

@@ -19,7 +19,7 @@
 
             
             <Button Content="Выйти из аккаунта" Command="{Binding SignOutCommand}" Margin="10" Width="200"/>
-            <Button Content="Заказы"/>
+            <Button Content="Заказы" Command="{Binding ViewOrdersCommand}"/>
         </StackPanel>
     </Grid>
 </UserControl>
