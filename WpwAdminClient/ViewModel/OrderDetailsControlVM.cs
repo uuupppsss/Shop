@@ -42,6 +42,7 @@ namespace WpfAdminClient.ViewModel
             _orderId=order_id;
             EditCommand = new CustomCommand(Edit);
             LoadData();
+            NoteService.Instance.OrderUpdated += OrderUpdated;
         }
 
 
@@ -49,6 +50,14 @@ namespace WpfAdminClient.ViewModel
         {
             Order = await AdminService.Instance.GetOrderDetails(_orderId);
             Items = await AdminService.Instance.GetOrderItems(_orderId);
+        }
+
+        private void OrderUpdated(OrderDTO order)
+        {
+            if(_orderId==order.Id)
+            {
+                LoadData();
+            }
         }
 
         private async void Edit()

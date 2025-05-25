@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ApiShop.Model;
 using ShopLib;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace ApiShop.Controllers
 {
@@ -97,28 +98,47 @@ namespace ApiShop.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok();
+                HubConnection connection = new HubConnectionBuilder()
+                           .WithUrl("http://localhost:5226/clientshub").Build();
+                await connection.StartAsync();
+                await connection.SendAsync("BrandsUpdated");
+                await connection.StopAsync();
+                
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+            return Ok();
         }
 
         // DELETE: api/Brands/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBrand(int id)
+        public async Task<ActionResult> DeleteBrand(int id)
         {
-            var brand = await _context.Brands.FindAsync(id);
+            var brand = await _context.Brands.Include(b=>b.Products)
+                .FirstOrDefaultAsync(b=>b.Id==id);
             if (brand == null)
             {
                 return NotFound();
             }
+            if (brand.Products.Count > 0)
+                return BadRequest("Вы не можете удалить бренд у которого есть подукты");
 
             _context.Brands.Remove(brand);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            HubConnection connection = new HubConnectionBuilder()
+                           .WithUrl("http://localhost:5226/clientshub").Build();
+            await connection.StartAsync();
+            await connection.SendAsync("BrandsUpdated");
+            foreach (var p in brand.Products)
+            {
+                await connection.SendAsync("ProductDeleted", p.Id);
+            }
+            await connection.StopAsync();
+
+            return Ok();
         }
     }
 }

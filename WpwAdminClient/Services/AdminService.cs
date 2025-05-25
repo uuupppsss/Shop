@@ -11,7 +11,6 @@ namespace WpfAdminClient.Services
 {
     public class AdminService
     { 
-        HubConnection _connection;
         private static AdminService instance;
         public static AdminService Instance
         {
@@ -78,7 +77,6 @@ namespace WpfAdminClient.Services
             try
             {
                 await Client.HttpClient.GetAsync($"Producttypes/{title}");
-                await _connection.InvokeAsync("TypesCollectionChanged");
             }
             catch(Exception ex)
             {
@@ -93,7 +91,6 @@ namespace WpfAdminClient.Services
             try
             {
                 await Client.HttpClient.GetAsync($"Brands/{title}");
-                await _connection.InvokeAsync("BrandsCollectionChanged");
             }
             catch (Exception ex)
             {
@@ -107,8 +104,12 @@ namespace WpfAdminClient.Services
         {
             try
             {
-                await Client.HttpClient.DeleteAsync($"Producttypes/{category_id}");
-                await _connection.InvokeAsync("TypesCollectionChanged");
+                var responce=await Client.HttpClient.DeleteAsync($"Producttypes/{category_id}");
+                if (!responce.IsSuccessStatusCode)
+                {
+                    MessageBox.Show(await responce.Content.ReadAsStringAsync());
+                    return;
+                }
             }
             catch(Exception ex)
             {
@@ -122,8 +123,12 @@ namespace WpfAdminClient.Services
         {
             try
             {
-                await Client.HttpClient.DeleteAsync($"Brands/{brand_id}");
-                await _connection.InvokeAsync("BrandsCollectionChanged");
+                var responce=await Client.HttpClient.DeleteAsync($"Brands/{brand_id}");
+                if (!responce.IsSuccessStatusCode)
+                {
+                    MessageBox.Show(await responce.Content.ReadAsStringAsync());
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -172,7 +177,7 @@ namespace WpfAdminClient.Services
             }
         }
 
-        public async Task UpdateProduct(ProductDTO product, List<ProductSizeDTO> sizes)
+        public async Task UpdateProduct(ProductDTO product, List<ProductSizeDTO> sizes, List<byte[]> images)
         {
             try
             {
@@ -180,19 +185,30 @@ namespace WpfAdminClient.Services
                 await Client.HttpClient.PutAsync("Products", 
                     new StringContent(json1, Encoding.UTF8, "application/json"));
                 string json2 = JsonSerializer.Serialize(sizes);
-                await Client.HttpClient.PutAsync($"Productsizes/{product.Id}",
-                    new StringContent(json1, Encoding.UTF8, "application/json"));
+                var responce = await Client.HttpClient.PutAsync($"Productsizes/{product.Id}",
+                    new StringContent(json2, Encoding.UTF8, "application/json"));
+                if(images?.Count>0)
+                {
+                    string json3 = JsonSerializer.Serialize(images);
+                    var responce3 = await Client.HttpClient.PutAsync($"Productimages/{product.Id}",
+                        new StringContent(json3, Encoding.UTF8, "application/json"));
+                }
             }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
             }
-            MessageBox.Show("Данные успешно сохранены");
+            
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                MessageBox.Show("Данные успешно сохранены");
+            });
         }
     
         public async Task UpdateOrder(int id, int status_id, string trak)
         {
+            if (trak == null) trak = "-";
             try
             {
                 await Client.HttpClient.GetAsync($"Orders/Update/{id}/{status_id}/{trak}");
@@ -216,6 +232,25 @@ namespace WpfAdminClient.Services
                 MessageBox.Show (ex.Message);
                 return null;
             }
+        }
+
+        public async Task RemoveProduct(int id)
+        {
+            try
+            {
+                var responce=await Client.HttpClient.DeleteAsync($"Products/{id}");
+                if(!responce.IsSuccessStatusCode)
+                {
+                    MessageBox.Show(await responce.Content.ReadAsStringAsync());
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            MessageBox.Show("Продукт удален успешно");
         }
     }
 }

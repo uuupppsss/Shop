@@ -78,7 +78,10 @@ namespace WpfAdminClient.ViewModel
 
         private void SignOut()
         {
-
+            AuthService.Instance.SignOut();
+            var signin = new SignInControl();
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            mainWindow.MainContentControl.Content = signin;
         }
     }
 }

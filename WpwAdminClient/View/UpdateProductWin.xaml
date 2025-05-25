@@ -32,6 +32,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <Button Content="Редактировать" Command="{Binding UpdateSizeCommand}"/>
+                <Button Content="Изменить изображения" Command="{Binding UpdateImagesCommand}" />
             </StackPanel>
 
             <StackPanel>
@@ -42,6 +43,19 @@
                 <TextBox Text="{Binding SizeCount}"/>
                 <Button Content="Сохранить" Command="{Binding AddNewSize}"/>
                 <Button Content="Отмена" Command="{Binding CancelChanges}"/>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Выбранные изображения"/>
+                <ListBox ItemsSource="{Binding Images}" Height="100" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Button Content="Очистить список" Command="{Binding ClearImagesCommand}"/>
             </StackPanel>
         </StackPanel>
         <Button Content="Сохранить продукт" Grid.Row="1" Command="{Binding SaveCommand}"/>

@@ -8,7 +8,7 @@
         Title="UpdateOrderWin" Height="200" Width="200">
     <StackPanel>
         <TextBlock Text="Статус"/>
-        <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}"/>
+        <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding SelectedStatus}" DisplayMemberPath="Title"/>
         <TextBlock Text="Трэк-номер"/>
         <TextBox Text="{Binding Trak}"/>
         <Button Content="Сохранить" Command="{Binding SaveCommand}"/>

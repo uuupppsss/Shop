@@ -35,7 +35,7 @@ namespace WpfAdminClient.ViewModel
 		private async void SignIn()
 		{
 			await AuthService.Instance.SignIn(Username, _pwdBox.Password);
-			if(AuthService.Instance.CurrentUser!=null)
+			if(AuthService.Instance.CurrentUser?.RoleId==1)
 			{
                 var mainControl = new MainControl();
                 var mainWindow = Application.Current.MainWindow as MainWindow;

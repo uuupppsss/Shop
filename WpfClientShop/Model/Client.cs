@@ -24,5 +24,9 @@ namespace WpfClientShop.Model
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
+        public static void ResetHeaders()
+        {
+            _httpClient.DefaultRequestHeaders.Clear();
+        }
     }
 }

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using ApiShop.Model;
 using ShopLib;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR.Client;
+using System.Drawing.Drawing2D;
 
 namespace ApiShop.Controllers
 {
@@ -98,29 +100,48 @@ namespace ApiShop.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok();
+                HubConnection connection = new HubConnectionBuilder()
+                           .WithUrl("http://localhost:5226/clientshub").Build();
+                await connection.StartAsync();
+                await connection.SendAsync("TypesUpdated");
+                await connection.StopAsync();
+                
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+            return Ok();
         }
 
         // DELETE: api/Producttypes/5
         [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProducttype(int id)
+        public async Task<ActionResult> DeleteProducttype(int id)
         {
-            var producttype = await _context.Producttypes.FindAsync(id);
+            var producttype = await _context.Producttypes.Include(t=>t.Products)
+                .FirstOrDefaultAsync(y=>y.Id==id);
             if (producttype == null)
             {
                 return NotFound();
             }
+            if (producttype.Products.Count > 0)
+                return BadRequest("Вы не можете удалить категорию у которой есть подукты");
 
             _context.Producttypes.Remove(producttype);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            HubConnection connection = new HubConnectionBuilder()
+                           .WithUrl("http://localhost:5226/clientshub").Build();
+            await connection.StartAsync();
+            await connection.SendAsync("TypesUpdated");
+            foreach (var p in producttype.Products)
+            {
+                await connection.SendAsync("ProductDeleted", p.Id);
+            }
+            await connection.StopAsync();
+
+            return Ok();
         }
 
        

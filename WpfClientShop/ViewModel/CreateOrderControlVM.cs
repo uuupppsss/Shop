@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using WpfClientShop.Model;
 using WpfClientShop.Services;
+using WpfClientShop.View;
 
 namespace WpfClientShop.ViewModel
 {
@@ -45,7 +47,11 @@ namespace WpfClientShop.ViewModel
 
         public async void Create()
         {
+            Order.CreateDate = DateTime.Now;
             await ClientService.Instance.CreateOrder(Order);
+            var orders = new OrdersControl();
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            mainWindow.MainContentControl.Content = orders;
         }
     }
 }

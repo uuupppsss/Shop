@@ -20,10 +20,13 @@ namespace WpfClientShop.ViewModel
 		}
 
 		public CustomCommand ViewOrdersCommand { get; }
+		public CustomCommand SignOutCommand { get; }
+
         public UserDataControlVM()
         {
             User=AuthService.Instance.CurrentUser;
 			ViewOrdersCommand = new CustomCommand(ViewOrders);
+			SignOutCommand=new CustomCommand(SignOut);
         }
 
 		private void ViewOrders()
@@ -31,6 +34,13 @@ namespace WpfClientShop.ViewModel
             var ordersControl = new OrdersControl();
             var mainWindow = Application.Current.MainWindow as MainWindow;
             mainWindow.MainContentControl.Content = ordersControl;
+        }
+		private void SignOut()
+		{
+			AuthService.Instance.SignOut();
+            var home = new MainControl();
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            mainWindow.MainContentControl.Content = home;
         }
     }
 }

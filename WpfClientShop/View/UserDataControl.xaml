@@ -17,9 +17,9 @@
             <TextBlock Text="Телефон:" FontWeight="Bold"/>
             <TextBox Text="{Binding User.Phone}" IsReadOnly="True" Margin="0,0,0,10"/>
 
-            
+
             <Button Content="Выйти из аккаунта" Command="{Binding SignOutCommand}" Margin="10" Width="200"/>
-            <Button Content="Заказы" Command="{Binding ViewOrdersCommand}"/>
+            <Button Content="Заказы" Command="{Binding ViewOrdersCommand}" Width="200"/>
         </StackPanel>
     </Grid>
 </UserControl>

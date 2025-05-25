@@ -109,9 +109,8 @@ namespace WpfAdminClient.ViewModel
             LoadTypes();
             LoadBrands();
 
-            NoteService.Instance.ProductsCollectionChanged += UpdateData;
-            NoteService.Instance.TypesCollectionChanged += LoadTypes;
-            NoteService.Instance.BrandsCollectionChanged += LoadBrands;
+            NoteService.Instance.TypesUpdated += LoadTypes;
+            NoteService.Instance.BrandsUpdated += LoadBrands;
         }
 
         private void ShowProductDetails(ProductDisplay product)

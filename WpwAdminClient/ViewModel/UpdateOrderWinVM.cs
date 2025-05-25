@@ -64,9 +64,9 @@ namespace WpfAdminClient.ViewModel
 
         private async void Save()
         {
-            if(string.IsNullOrWhiteSpace(Trak)||SelectedStatus==null)
+            if(SelectedStatus==null)
             {
-                MessageBox.Show("Заполните все поля");
+                MessageBox.Show("Выберите статус");
                 return;
             }
             await AdminService.Instance.UpdateOrder(_orderId,SelectedStatus.Id,Trak);

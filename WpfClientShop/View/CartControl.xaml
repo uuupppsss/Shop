@@ -42,9 +42,10 @@
                                     <Button Content="+" Command="{Binding DataContext.IncreaseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                         CommandParameter="{Binding}" Width="30"/>
                                     <TextBlock Text="{Binding Cost, StringFormat=' {0} рублей'}" FontStyle="Italic"/>
+                                    <Button Content="Удалить" Command="{Binding DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=UserControl} }"
+                        CommandParameter="{Binding}"/>
                                 </StackPanel>
-                                <Button Content="Удалить"/>
-                                <Button Content="..."/>
+                                
 
                                 <TextBlock Text="Товар недоступен для заказа" 
                                Visibility="{Binding IfNotAbleToOrder, Converter={StaticResource BooleanToVisibilityConverter}}" 

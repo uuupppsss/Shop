@@ -64,7 +64,7 @@ namespace WpfAdminClient.ViewModel
             Statuses = await AdminService.Instance.GetOrderStatuses();
             Statuses.Insert(0, new OrderStatusDTO { Id = 0, Title = "Все" });
             SelectedStatus = Statuses[0];
-            NoteService.Instance.OrdersCollectionChanged += UpdateData;
+            NoteService.Instance.OrderCreated += UpdateData;
             Orders = await AdminService.Instance.GetOrdersList(SelectedStatus.Id);
         }
 

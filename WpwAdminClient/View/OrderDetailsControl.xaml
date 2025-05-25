@@ -14,7 +14,7 @@
         <StackPanel Orientation="Horizontal">
             <StackPanel Margin="10">
                 <TextBlock Text="{Binding Order.FullName,StringFormat='Заказчик {0}'}" FontWeight="Bold" FontSize="16"/>
-                <TextBlock Text="{Binding Order.Cost,StringFormat='Стоимость {0}'}" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding Order.Cost,StringFormat='Стоимость {0} рублей'}" Margin="0,5,0,0"/>
                 <TextBlock Text="{Binding Order.Status,StringFormat='Статус {0}'}" Margin="0,5,0,0"/>
                 <TextBlock Text="{Binding Order.Adress,StringFormat='Адрес {0}'}" Margin="0,5,0,0"/>
                 <TextBlock Text="{Binding Order.Index,StringFormat='почтовый индекс {0}'}" Margin="0,5,0,0"/>
@@ -25,7 +25,17 @@
             <StackPanel>
                 <TextBlock Text="Товары в заказе"/>
                 <ListBox ItemsSource="{Binding Items}" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal"
+>
+                                <TextBlock Text="{Binding ProductName}"/>
+                                <TextBlock Text="{Binding Size, StringFormat=' размер {0} '}"/>
+                                <TextBlock Text="{Binding Count, StringFormat=' {0} шт'}"/>
 
+                            </StackPanel>                        
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </StackPanel>
         </StackPanel>

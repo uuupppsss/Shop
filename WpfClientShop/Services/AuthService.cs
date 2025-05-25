@@ -54,12 +54,15 @@ namespace WpfClientShop.Services
             {
                 string json=JsonSerializer.Serialize(user);
                 await Client.HttpClient.PostAsync($"Auth/SignUp",new StringContent(json, Encoding.UTF8, "application/json"));
-                MessageBox.Show("Регистрация прошла успешно! Выполните авторизацию");
+                
             }
             catch(Exception ex) 
             {
                 MessageBox.Show(ex.Message);
+                return;
             }
+            MessageBox.Show("Регистрация прошла успешно! Выполните авторизацию");
+
         }
 
         public async Task SignIn(string username,string password)
@@ -70,17 +73,27 @@ namespace WpfClientShop.Services
                     .GetFromJsonAsync<AuthResponse>($"Auth/SignIn/{username}/{password}");
                 CurrentUser = response.User;
                 Client.SetToken(response.Token);
-                MessageBox.Show($"Авторизация прошла успешно! Добро пожаловать, {CurrentUser.Username}");
+                if (CurrentUser?.RoleId == 2)
+                {
+                    MessageBox.Show($"Авторизация прошла успешно! Добро пожаловать, {CurrentUser.Username}");
+                }
+                else
+                {
+                    MessageBox.Show("Что то пошло не так, пользователь не найден");
+                }
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+           
         }
 
         public void SignOut()
         {
             CurrentUser = null; 
+            Client.ResetHeaders();
         }
     }
 }

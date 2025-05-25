@@ -63,7 +63,14 @@ namespace WpfAdminClient.Services
                     .GetFromJsonAsync<AuthResponse>($"Auth/SignIn/{username}/{password}");
                 CurrentUser = response.User;
                 Client.SetToken(response.Token);
-                MessageBox.Show($"Авторизация прошла успешно! Добро пожаловать, {CurrentUser.Username}");
+                if (CurrentUser?.RoleId == 1)
+                {
+                    MessageBox.Show($"Авторизация прошла успешно! Добро пожаловать, {CurrentUser.Username}");
+                }
+                else
+                {
+                    MessageBox.Show("Что то пошло не так, пользователь не найден");
+                }
             }
             catch (Exception ex)
             {
@@ -74,6 +81,7 @@ namespace WpfAdminClient.Services
         public void SignOut()
         {
             CurrentUser = null; 
+            Client.ResetHeaders();
         }
     }
 }

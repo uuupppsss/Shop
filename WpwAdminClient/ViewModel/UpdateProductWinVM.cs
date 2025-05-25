@@ -1,9 +1,12 @@
-﻿using ShopLib;
+﻿using Microsoft.Win32;
+using ShopLib;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using WpfAdminClient.Model;
 using WpfAdminClient.Services;
 
@@ -67,12 +70,25 @@ namespace WpfAdminClient.ViewModel
             }
         }
 
+        private List<ImageDisplay> _images = new List<ImageDisplay>();
+        public List<ImageDisplay> Images
+        {
+            get => _images;
+            set
+            {
+                _images = value;
+                Signal();
+            }
+        }
+
         private int _productId;
 
         public CustomCommand AddNewSize { get; }
         public CustomCommand UpdateSizeCommand { get; }
         public CustomCommand CancelChanges {  get; }
         public CustomCommand SaveCommand { get; }
+        public CustomCommand UpdateImagesCommand { get; }
+        public CustomCommand ClearImagesCommand { get; }
 
         public UpdateProductWinVM(int product_id)
         {
@@ -81,6 +97,8 @@ namespace WpfAdminClient.ViewModel
             UpdateSizeCommand = new CustomCommand(SizeSelectionChanged);
             CancelChanges = new CustomCommand(CanselSizeChanges);
             SaveCommand=new CustomCommand(SaveChanges);
+            UpdateImagesCommand=new CustomCommand(UpdateImages);
+            ClearImagesCommand=new CustomCommand(ClearImages);
             LoadData(); 
         }
 
@@ -88,6 +106,35 @@ namespace WpfAdminClient.ViewModel
         {
             Product=await UsingService.Instance.GetProductDetails(_productId);
             ProductSizes = await UsingService.Instance.GetProductSizes(_productId);
+           
+        }
+
+        private void ClearImages()
+        {
+            Images = new();
+        }
+
+        private void UpdateImages()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp",
+                Multiselect = true
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                foreach (var file in openFileDialog.FileNames)
+                {
+                    byte[] imageBytes = File.ReadAllBytes(file);
+                    Images.Add(new ImageDisplay
+                    {
+                        Name = file,
+                        Data = imageBytes
+                    });
+                    Images = [.. Images];
+                }
+            }
         }
 
         private void AddSize()
@@ -142,7 +189,12 @@ namespace WpfAdminClient.ViewModel
 
         private async void SaveChanges()
         {
-            await AdminService.Instance.UpdateProduct(Product, ProductSizes);
+            var byteImages = new List<byte[]>();
+            if(Images?.Count!=0)
+            {
+                byteImages = Images.Select(i => i.Data).ToList();
+            }
+            await AdminService.Instance.UpdateProduct(Product, ProductSizes,byteImages);
         }
 
     }

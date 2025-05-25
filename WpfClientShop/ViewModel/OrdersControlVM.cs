@@ -24,6 +24,7 @@ namespace WpfClientShop.ViewModel
         public OrdersControlVM()
         {
             LoadData();
+            NoteService.Instance.OrderUpdated += LoadData;
         }
 
         private async void LoadData()

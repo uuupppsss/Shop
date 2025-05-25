@@ -81,10 +81,23 @@ namespace WpfClientShop.Services
             }
         }
 
+        public async Task RemoveBasketItem(int id)
+        {
+            try
+            {
+                await Client.HttpClient.DeleteAsync($"Basketitems/{id}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         public async Task CreateOrder(OrderDTO order)
         {
             try
             {
+                order.Trak = "-";
                 string json = JsonSerializer.Serialize(order);
                 var responce=await Client.HttpClient.PostAsync("Orders", 
                     new StringContent(json,Encoding.UTF8, "application/json"));

@@ -258,9 +258,9 @@ namespace WpfAdminClient.ViewModel
             TypesList = await UsingService.Instance.GetTypesList();
             Sizes = new();
 
-            NoteService.Instance.TypesCollectionChanged+= 
+            NoteService.Instance.TypesUpdated+= 
                 async ()=> TypesList = await UsingService.Instance.GetTypesList();
-            NoteService.Instance.BrandsCollectionChanged +=
+            NoteService.Instance.BrandsUpdated +=
                 async () => Brands = await UsingService.Instance.GetBrandsList();
         }
 
@@ -288,7 +288,7 @@ namespace WpfAdminClient.ViewModel
             if (TypeToDrop != null)
             {
                 var result = MessageBox.Show
-                    ($"Удалить категорию {TypeToDrop.Title}?", "Все товары этой категории так же будут удалены", MessageBoxButton.YesNo);
+                    ($"Удалить категорию {TypeToDrop.Title}?", "Подтвердите действие", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
                     await AdminService.Instance.RemoveCategory(TypeToDrop.Id);
@@ -302,7 +302,7 @@ namespace WpfAdminClient.ViewModel
             if (BrandToDrop != null)
             {
                 var result = MessageBox.Show
-                    ($"Удалить категорию {BrandToDrop.Title}?", "Все товары этой категории так же будут удалены", MessageBoxButton.YesNo);
+                    ($"Удалить категорию {BrandToDrop.Title}?", "Подтвердите действие", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
                     await AdminService.Instance.RemoveBrand(BrandToDrop.Id);

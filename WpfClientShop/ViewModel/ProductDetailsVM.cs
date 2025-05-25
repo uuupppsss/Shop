@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using WpfClientShop.Model;
 using WpfClientShop.Services;
+using WpfClientShop.View;
 
 namespace WpfClientShop.ViewModel
 {
@@ -69,24 +70,72 @@ namespace WpfClientShop.ViewModel
         public CustomCommand NextCommand { get; }
         public CustomCommand AddToBasketCommand {  get; }
 
+        private int _productId;
+
         public ProductDetailsVM(int product_id)
         {
+            _productId = product_id;
             PreviousCommand = new CustomCommand(Previous);
             NextCommand = new CustomCommand(Next);
             AddToBasketCommand = new CustomCommand(AddToBasket);
 
-            LoadData(product_id);
+            LoadData();
             Unauthorize = AuthService.Instance.IsAuthorized();
+
+            NoteService.Instance.ProductUpdated += ProductUpdated;
+            NoteService.Instance.ProductDeleted += ProductDeleted;
+            NoteService.Instance.ProductImagesUpdated += ProductImagesUpdated;
+            NoteService.Instance.ProductSizesUpdated += ProductSizesUpdated;
         }
-        private async void LoadData(int product_id)
+        private async void LoadData()
         {
-            _images = await UsingService.Instance.GetProductImages(product_id);
+            _images = await UsingService.Instance.GetProductImages(_productId);
             _currentIndex = 0;
             Signal(nameof(CurrentImage));
-            Product = await UsingService.Instance.GetProductDetails(product_id);
-            ProductSizes=await UsingService.Instance.GetProductSizes(product_id);
+            Product = await UsingService.Instance.GetProductDetails(_productId);
+            ProductSizes=await UsingService.Instance.GetProductSizes(_productId);
 
         }
+
+        public void ProductDeleted(int product_id)
+        {
+            if (_productId == product_id)
+            {
+                MessageBox.Show("Продукт был удален");
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var mainControl = new MainControl();
+                    var mainWindow = Application.Current.MainWindow as MainWindow;
+                    mainWindow.MainContentControl.Content = mainControl;
+                });
+            }
+        }
+
+        public async void ProductSizesUpdated(int product_id)
+        {
+            if (_productId == product_id)
+            {
+                ProductSizes = await UsingService.Instance.GetProductSizes(_productId);
+            }
+        }
+
+        public async void ProductImagesUpdated(int product_id)
+        {
+            if (_productId == product_id)
+            {
+                _images = await UsingService.Instance.GetProductImages(_productId);
+                _currentIndex = 0;
+            }
+        }
+
+        public async void ProductUpdated(int product_id)
+        {
+            if(_productId==product_id)
+            {
+                Product = await UsingService.Instance.GetProductDetails(_productId);
+            }
+        }
+
         private BitmapImage GetCurrentImage()
         {
             if (_images!=null&&_images.Count > 0)

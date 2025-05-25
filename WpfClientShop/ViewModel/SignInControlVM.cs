@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using WpfClientShop.Model;
 using WpfClientShop.Services;
+using WpfClientShop.View;
 
 namespace WpfClientShop.ViewModel
 {
@@ -38,6 +40,12 @@ namespace WpfClientShop.ViewModel
 		private async void SignIn()
 		{
 			await AuthService.Instance.SignIn(Username, _pwdBox.Password);
-		}
+            if (AuthService.Instance.CurrentUser?.RoleId == 2)
+            {
+                var mainControl = new MainControl();
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                mainWindow.MainContentControl.Content = mainControl;
+            }
+        }
     }
 }

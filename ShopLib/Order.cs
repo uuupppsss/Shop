@@ -23,7 +23,7 @@ public partial class Order
 
     public string FullName { get; set; } = null!;
 
-    public string Trak { get; set; } = " ";
+    public string Trak { get; set; } = "-";
 
     public virtual Orderstatus? Status { get; set; }
 

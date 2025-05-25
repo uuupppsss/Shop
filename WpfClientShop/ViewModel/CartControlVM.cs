@@ -35,6 +35,7 @@ namespace WpfClientShop.ViewModel
 
         public CustomCommand<BasketItemDTO> IncreaseCommand { get; set; }
         public CustomCommand<BasketItemDTO> DecreaseCommand { get; set; }
+        public CustomCommand<BasketItemDTO> RemoveCommand { get; set; }
         public CustomCommand CreateOrderCommand { get; set; }
 
         public CartControlVM()
@@ -42,6 +43,7 @@ namespace WpfClientShop.ViewModel
             IncreaseCommand = new CustomCommand<BasketItemDTO>(IncreaseCount);
             DecreaseCommand=new CustomCommand<BasketItemDTO>(DecreaseCount);
             CreateOrderCommand=new CustomCommand(GoToCreateOrder);
+            RemoveCommand = new CustomCommand<BasketItemDTO>(RemoveItem);
             LoadData();
         }
 
@@ -90,8 +92,21 @@ namespace WpfClientShop.ViewModel
             }
         }
 
+        public async void RemoveItem(BasketItemDTO item)
+        {
+            await ClientService.Instance.RemoveBasketItem(item.Id);
+            Basket.Remove(item);
+            Basket = [..Basket];
+            CalculateBasketCost();
+        }
+
         public void GoToCreateOrder()
         {
+            if(Basket.Count==0)
+            {
+                MessageBox.Show("Корзина пуста");
+                return;
+            }
             List<OrderItemDTO> result = new();
             foreach (var item in Basket)
             {

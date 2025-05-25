@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ApiShop.Model;
 using ShopLib;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace ApiShop.Controllers
 {
@@ -55,34 +56,52 @@ namespace ApiShop.Controllers
 
         // PUT: api/Productimages/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutProductimage(int id, Productimage productimage)
-        //{
-        //    if (id != productimage.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutProductimage(int id, List<byte[]> images)
+        {
+            var product = await _context.Products.Include(p => p.Productimages)
+                .FirstOrDefaultAsync(p=>p.Id==id);
+            if (product == null) return NotFound();
 
-        //    _context.Entry(productimage).State = EntityState.Modified;
+            foreach (var i in product.Productimages)
+            {
+                _context.Productimages.Remove(i);
+            }
+            try
+            {
+                await _context.SaveChangesAsync();
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!ProductimageExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-        //    return NoContent();
-        //}
+            foreach(var i in images)
+            {
+                _context.Productimages.Add(new Productimage
+                {
+                    ProductId=id,
+                    Image=i
+                });
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                HubConnection connection = new HubConnectionBuilder()
+       .WithUrl("http://localhost:5226/clientshub").Build();
+                await connection.StartAsync();
+                await connection.SendAsync("ProductImagesUpdated", id);
+                await connection.StopAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
 
         // POST: api/Productimages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

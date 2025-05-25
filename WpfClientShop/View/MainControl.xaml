@@ -24,7 +24,7 @@
                       DisplayMemberPath="Title" Margin="10"/>
             </StackPanel>
 
-        <ListBox ItemsSource="{Binding ProductsView}" VerticalAlignment="Stretch" Background="#f9f9f9" BorderThickness="0" Grid.Row="1">
+        <ListBox ItemsSource="{Binding ProductsView,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" Background="#f9f9f9" BorderThickness="0" Grid.Row="1">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="3" />

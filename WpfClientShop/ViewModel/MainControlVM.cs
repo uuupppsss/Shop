@@ -12,12 +12,12 @@ using WpfClientShop.View;
 
 namespace WpfClientShop.ViewModel
 {
-    public class MainControlVM:BaseVM
+    public class MainControlVM : BaseVM
     {
         private UsingService _usingService;
 
-        private List<ProductDTO> _products;
 
+        private List<ProductDTO> _products;
         public List<ProductDTO> Products
         {
             get { return _products; }
@@ -29,20 +29,18 @@ namespace WpfClientShop.ViewModel
         }
 
         private List<ProductDisplay> _productsView;
-
         public List<ProductDisplay> ProductsView
         {
             get { return _productsView; }
-            set 
+            set
             {
-                _productsView = value; 
-                Signal() ;
+                _productsView = value;
+                Signal();
             }
         }
 
 
         private List<BrandDTO> _brands;
-
         public List<BrandDTO> Brands
         {
             get { return _brands; }
@@ -54,7 +52,6 @@ namespace WpfClientShop.ViewModel
         }
 
         private List<ProductTypeDTO> _typesList;
-
         public List<ProductTypeDTO> TypesList
         {
             get { return _typesList; }
@@ -66,7 +63,6 @@ namespace WpfClientShop.ViewModel
         }
 
         private ProductTypeDTO _selectedType;
-
         public ProductTypeDTO SelectedType
         {
             get { return _selectedType; }
@@ -74,11 +70,11 @@ namespace WpfClientShop.ViewModel
             {
                 _selectedType = value;
                 Signal();
+                UpdateData();
             }
         }
 
         private BrandDTO _selectedBrand;
-
         public BrandDTO SelectedBrand
         {
             get { return _selectedBrand; }
@@ -86,6 +82,7 @@ namespace WpfClientShop.ViewModel
             {
                 _selectedBrand = value;
                 Signal();
+                UpdateData();
             }
         }
 
@@ -101,6 +98,7 @@ namespace WpfClientShop.ViewModel
             }
         }
 
+
         public CustomCommand<ProductDisplay> ShowProductDetailsCommand { get; set; }
 
         public MainControlVM()
@@ -109,21 +107,47 @@ namespace WpfClientShop.ViewModel
             ShowProductDetailsCommand = new CustomCommand<ProductDisplay>(ShowProductDetails);
         }
 
-        private async void LoadData()
+        private void LoadData()
         {
             _usingService = UsingService.Instance;
 
-            Products = await _usingService.GetProductsList();
-            Brands = await _usingService.GetBrandsList();
-            TypesList = await _usingService.GetTypesList();
-            ProductsView= ProductConverter.Instance.ConvertToProductDisplay(Products);
+            LoadTypes();
+            LoadBrands();
+
+            NoteService.Instance.TypesUpdated += LoadTypes;
+            NoteService.Instance.BrandsUpdated += LoadBrands;
+            NoteService.Instance.ProductDeleted += ProductDeleted;
+        }
+
+        public void ProductDeleted(int product_id)
+        {
+            var product = ProductsView.FirstOrDefault(p=>p.Id==product_id);
+            if (product!=null)
+            {
+                ProductsView.Remove(product);
+                Signal(nameof(ProductsView));
+            }
         }
 
         private void ShowProductDetails(ProductDisplay product)
         {
             var detailsControl = new ProductDetailsControl(product.Id);
             var mainWindow = Application.Current.MainWindow as MainWindow;
-            mainWindow.MainContentControl.Content = detailsControl; 
+            mainWindow.MainContentControl.Content = detailsControl;
+        }
+
+        private async void LoadTypes()
+        {
+            TypesList = await _usingService.GetTypesList();
+            TypesList.Insert(0, new ProductTypeDTO { Id = 0, Title = "Все" });
+            SelectedType = TypesList[0];
+        }
+
+        private async void LoadBrands()
+        {
+            Brands = await _usingService.GetBrandsList();
+            Brands.Insert(0, new BrandDTO { Id = 0, Title = "Все" });
+            SelectedBrand = Brands[0];
         }
 
         private async void UpdateData()

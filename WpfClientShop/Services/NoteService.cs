@@ -2,13 +2,12 @@
 using ShopLib;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WpfAdminClient.Services
+namespace WpfClientShop.Services
 {
     public class NoteService
     {
@@ -23,74 +22,67 @@ namespace WpfAdminClient.Services
             }
         }
 
-        private HubConnection _clientconnection;
-        private HubConnection _adminconnection;
+        private HubConnection connection;
         public NoteService()
         {
             InitializeGetingNotes();
         }
 
         public event Action<int> ProductUpdated;
-        public event Action OrderCreated;
+        public event Action OrderUpdated;
         public event Action BrandsUpdated;
         public event Action TypesUpdated;
-        public event Action<OrderDTO> OrderUpdated;
         public event Action<int> ProductDeleted;
+
         public event Action<int> ProductImagesUpdated;
         public event Action<int> ProductSizesUpdated;
 
         private async void InitializeGetingNotes()
         {
-            _clientconnection = new HubConnectionBuilder()
+            connection = new HubConnectionBuilder()
                            .WithUrl("http://localhost:5226/clientshub").Build();
 
-            _clientconnection.On<int>("ProductUpdated", (product_id) =>
-            {
-                ProductUpdated?.Invoke(product_id);
-            });
-
-            _clientconnection.On<int>("ProductImagesUpdated", (product_id) =>
-            {
-                ProductImagesUpdated?.Invoke(product_id);
-            });
-
-            _clientconnection.On<int>("ProductSizesUpdated", (product_id) =>
-            {
-                ProductSizesUpdated?.Invoke(product_id);
-            });
-
-            _clientconnection.On<int>("ProductDeleted", (product_id) =>
+            connection.On<int>("ProductDeleted", (product_id) =>
             {
                 ProductDeleted?.Invoke(product_id);
             });
 
-            _clientconnection.On("BrandsUpdated", () =>
+            connection.On<int>("ProductUpdated", (product_id) =>
+            {
+                ProductUpdated?.Invoke(product_id);
+            });
+
+            connection.On<int>("ProductImagesUpdated", (product_id) =>
+            {
+                ProductImagesUpdated?.Invoke(product_id);
+            });
+
+            connection.On<int>("ProductSizesUpdated", (product_id) =>
+            {
+                ProductSizesUpdated?.Invoke(product_id);
+            });
+
+            connection.On<OrderDTO>("OrderUpdated", (order) =>
+            {
+                
+                if(order.UserId==AuthService.Instance.CurrentUser?.Id)
+                {
+                    OrderUpdated?.Invoke();
+                    MessageBox.Show($"Заказ #{order.Id} обновлен");
+                }
+                
+            });
+
+            connection.On("BrandsUpdated", () =>
             {
                 BrandsUpdated?.Invoke();
             });
-
-            _clientconnection.On("TypesUpdated", () =>
+            connection.On("TypesUpdated", () =>
             {
                 TypesUpdated?.Invoke();
             });
 
-            _clientconnection.On<OrderDTO>("OrderUpdated", (order) =>
-            {
-                OrderUpdated?.Invoke(order);
-            });
-
-            await _clientconnection.StartAsync();
-
-            _adminconnection = new HubConnectionBuilder()
-                          .WithUrl("http://localhost:5226/adminshub").Build();
-
-            _adminconnection.On("OrderCreated", () =>
-            {
-                OrderCreated?.Invoke();
-                MessageBox.Show("Создан новый заказ");
-            });
-
-            await _adminconnection.StartAsync();
+            await connection.StartAsync();
         }
     }
 }

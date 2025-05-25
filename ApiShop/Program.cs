@@ -87,7 +87,9 @@ namespace ApiShop
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapHub<AdminsHub>("adminshub");
+            app.MapHub<AdminNoteHub>("adminshub");
+            app.MapHub<ClientNoteHub>("clientshub");
+
             app.MapControllers();
 
             app.Run();

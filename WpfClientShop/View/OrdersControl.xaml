@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WpfClientShop.View"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="700">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -22,10 +22,10 @@
         <ListView ItemsSource="{Binding Orders}" Grid.Row="1">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Номер" DisplayMemberBinding="{Binding Id}" Width="50"/>
-                    <GridViewColumn Header="Стоимость" DisplayMemberBinding="{Binding Cost}" Width="100"/>
-                    <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="100"/>
-                    <GridViewColumn Header="Трэк-номер" DisplayMemberBinding="{Binding trak}" Width="100"/>
+                    <GridViewColumn Header="Номер" DisplayMemberBinding="{Binding Id}" Width="100"/>
+                    <GridViewColumn Header="Стоимость" DisplayMemberBinding="{Binding Cost, StringFormat=' {0} руб.'}" Width="200"/>
+                    <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="200"/>
+                    <GridViewColumn Header="Трэк-номер" DisplayMemberBinding="{Binding Trak}" Width="200"/>
                 </GridView>
             </ListView.View>
         </ListView>

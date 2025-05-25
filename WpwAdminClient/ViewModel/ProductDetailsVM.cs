@@ -1,6 +1,8 @@
 ﻿using ShopLib;
 using System.IO;
+using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using WpfAdminClient.Model;
 using WpfAdminClient.Services;
 using WpfAdminClient.View;
@@ -42,8 +44,16 @@ namespace WpfAdminClient.ViewModel
             }
         }
 
-
-        public BitmapImage CurrentImage => GetCurrentImage();
+        private BitmapImage _currentImage;
+        public BitmapImage CurrentImage
+        {
+            get { return _currentImage; }
+            set
+            {
+                _currentImage = value;
+                Signal();
+            }
+        }
 
         private List<ProductImageDTO> _images;
         private int _currentIndex;
@@ -52,23 +62,80 @@ namespace WpfAdminClient.ViewModel
         public CustomCommand NextCommand { get; }
 
         public CustomCommand UpdateProductCommand { get; }
+        public CustomCommand RemoveProductCommand {  get; }
 
+        private int _productId;
         public ProductDetailsVM(int product_id)
         {
+            _productId=product_id;
             PreviousCommand = new CustomCommand(Previous);
             NextCommand = new CustomCommand(Next);
             UpdateProductCommand=new CustomCommand(UpdateProduct);
+            RemoveProductCommand = new CustomCommand(RemoveProduct);
 
-            LoadData(product_id);
+            LoadData();
+            NoteService.Instance.ProductUpdated += ProductUpdated;
+            NoteService.Instance.ProductImagesUpdated += ProductImagesUpdated;
+            NoteService.Instance.ProductSizesUpdated += ProductSizesUpdated;
         }
-        private async void LoadData(int product_id)
+        private async void LoadData()
         {
-            _images = await UsingService.Instance.GetProductImages(product_id);
+            _images = await UsingService.Instance.GetProductImages(_productId);
             _currentIndex = 0;
-            Signal(nameof(CurrentImage));
-            Product = await UsingService.Instance.GetProductDetails(product_id);
-            ProductSizes=await UsingService.Instance.GetProductSizes(product_id);
+            CurrentImage=GetCurrentImage();
+            Product = await UsingService.Instance.GetProductDetails(_productId);
+            ProductSizes=await UsingService.Instance.GetProductSizes(_productId);
 
+        }
+
+        private async void RemoveProduct()
+        {
+            
+            var result = MessageBox.Show("Удалить продукт?", "Подтвердите действие", MessageBoxButton.YesNo);
+            if(result==MessageBoxResult.Yes)
+            {
+                await AdminService.Instance.RemoveProduct(_productId);
+    
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var mainControl = new MainControl();
+                    var mainWindow = Application.Current.MainWindow as MainWindow;
+                    mainWindow.MainContentControl.Content = mainControl;
+                });
+
+                //Application.Current.Dispatcher.Invoke(() =>
+                //{
+                //    var mainControl = new MainControl();
+                //    var mainWindow = Application.Current.MainWindow as MainWindow;
+                //    mainWindow.MainContentControl.Content = mainControl;// Теперь создаётся в UI-потоке
+                //});
+
+            }
+        }
+
+        private async void ProductUpdated(int product_id)
+        {
+            if(_productId==product_id)
+            {
+                Product = await UsingService.Instance.GetProductDetails(_productId);
+            }
+        }
+
+        public async void ProductSizesUpdated(int product_id)
+        {
+            if (_productId == product_id)
+            {
+                ProductSizes = await UsingService.Instance.GetProductSizes(_productId);
+            }
+        }
+
+        public async void ProductImagesUpdated(int product_id)
+        {
+            if (_productId == product_id)
+            {
+                _images = await UsingService.Instance.GetProductImages(_productId);
+                _currentIndex = 0;
+            }
         }
 
         private void UpdateProduct()
@@ -100,7 +167,7 @@ namespace WpfAdminClient.ViewModel
             if (_images.Count > 0)
             {
                 _currentIndex = (_currentIndex - 1 + _images.Count) % _images.Count;
-                Signal(nameof(CurrentImage));
+                CurrentImage=GetCurrentImage();
             }
         }
 
@@ -109,7 +176,7 @@ namespace WpfAdminClient.ViewModel
             if (_images.Count > 0)
             {
                 _currentIndex = (_currentIndex + 1) % _images.Count;
-                Signal(nameof(CurrentImage));
+                CurrentImage = GetCurrentImage();
             }
         }
 

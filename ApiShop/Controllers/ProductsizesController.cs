@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ApiShop.Model;
 using ShopLib;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace ApiShop.Controllers
 {
@@ -31,7 +32,7 @@ namespace ApiShop.Controllers
             {
                 result.Add(new ProductSizeDTO
                 {
-                    Id = s.ProductId,
+                    Id = s.Id,
                     ProductId = s.ProductId,
                     Size = s.Size,
                     Count = s.Count
@@ -44,9 +45,9 @@ namespace ApiShop.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize(Roles = "admin")]
         [HttpPut("{product_id}")]
-        public async Task<IActionResult> PutProductsize(int product_id, List<ProductSizeDTO> productsize)
+        public async Task<ActionResult> PutProductsize(int product_id, List<ProductSizeDTO> productsize)
         {
-            var newSizes = productsize.Where(s => s.Id == 0);
+            var newSizes = productsize.Where(s => s.Id == 0).ToList();
             foreach (var s in newSizes)
             {
                 _context.Productsizes.Add(new Productsize
@@ -55,9 +56,24 @@ namespace ApiShop.Controllers
                     Count = s.Count,
                     ProductId = product_id
                 });
+            
             }
 
-            var updatedSizes = productsize.Where(s => s.Id == product_id);
+            try
+            {
+                await _context.SaveChangesAsync();
+                HubConnection connection = new HubConnectionBuilder()
+                       .WithUrl("http://localhost:5226/clientshub").Build();
+                await connection.StartAsync();
+                await connection.SendAsync("ProductSizesUpdated", product_id);
+                await connection.StopAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            var updatedSizes = productsize.Where(s => s.ProductId == product_id).ToList();
             foreach (var s in updatedSizes)
             {
                 var found_size = await _context.Productsizes

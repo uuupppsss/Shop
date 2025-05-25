@@ -28,6 +28,6 @@ namespace ShopLib
 
         public string FullName { get; set; } = null!;
 
-        public string Trak { get; set; } = " ";
+        public string? Trak { get; set; } 
     }
 }
