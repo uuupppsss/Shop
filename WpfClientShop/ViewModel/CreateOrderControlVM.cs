@@ -47,6 +47,12 @@ namespace WpfClientShop.ViewModel
 
         public async void Create()
         {
+           if(string.IsNullOrWhiteSpace(Order.Adress) || string.IsNullOrWhiteSpace(Order.FullName) || 
+                string.IsNullOrWhiteSpace(Order.Index) || string.IsNullOrWhiteSpace(Order.ContactPhone))
+            {
+                MessageBox.Show("Заполните все поля");
+                return;
+            }
             Order.CreateDate = DateTime.Now;
             await ClientService.Instance.CreateOrder(Order);
             var orders = new OrdersControl();
