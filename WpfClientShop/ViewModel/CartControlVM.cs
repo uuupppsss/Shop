@@ -74,8 +74,9 @@ namespace WpfClientShop.ViewModel
                 Basket[index].Count++;
 
                 await ClientService.Instance.UpdateBasketItem(Basket[index].Id, Basket[index].Count);
-                Basket = [.. Basket];
-                CalculateBasketCost();
+                //Basket = [.. Basket];
+                //CalculateBasketCost();
+                LoadData();
             }
         }
 
@@ -87,8 +88,9 @@ namespace WpfClientShop.ViewModel
                 Basket[index].Count--;
 
                 await ClientService.Instance.UpdateBasketItem(Basket[index].Id, Basket[index].Count);
-                Basket = [.. Basket];
-                CalculateBasketCost();
+                //Basket = [.. Basket];
+                //CalculateBasketCost();
+                LoadData();
             }
         }
 

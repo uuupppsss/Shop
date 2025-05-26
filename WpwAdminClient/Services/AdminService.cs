@@ -90,7 +90,7 @@ namespace WpfAdminClient.Services
         {
             try
             {
-                await Client.HttpClient.GetAsync($"Brands/{title}");
+                var result=await Client.HttpClient.GetAsync($"Brands/{title}");
             }
             catch (Exception ex)
             {

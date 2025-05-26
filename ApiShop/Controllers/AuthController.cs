@@ -25,7 +25,7 @@ namespace ApiShop.Controllers
         {
             var found_user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Username == username);
             if (found_user == null) return Unauthorized("Пользователь с таким именем не найден");
-            if (found_user.Password != password) return Unauthorized("Пароль не верный");
+            if (found_user.Password != HashClass.HashMethod(password)) return Unauthorized("Пароль не верный");
 
             var claims = new List<Claim>()
             {
@@ -67,7 +67,7 @@ namespace ApiShop.Controllers
             User user = new User()
             {
                 Username = sent_user.Username,
-                Password = sent_user.Password,
+                Password = HashClass.HashMethod(sent_user.Password),
                 Email = sent_user.Email,
                 Phone = sent_user.Phone,
                 RoleId = 2,
